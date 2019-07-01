@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="US-ASCII"?>
+<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
+<?rfc toc="yes"?>
+<?rfc tocompact="yes"?>
+<?rfc tocdepth="3"?>
+<?rfc tocindent="yes"?>
+<?rfc symrefs="yes"?>
+<?rfc sortrefs="yes"?>
+<?rfc comments="yes"?>
+<?rfc inline="yes"?>
+<?rfc compact="yes"?>
+<?rfc subcompact="no"?>
+<rfc category="std" docName="draft-xx-grow-bmp-path-marking-tlv-00"
+     ipr="trust200902">
+  <front>
+    <title abbrev="BMP path marking tlv">BMP Extension for Path Marking
+    TLV</title>
+
+    <author fullname="Camilo Cardona" initials="C." surname="Cardona">
+      <organization>NTT</organization>
+
+      <address>
+        <postal>
+          <street/>
+
+          <city/>
+
+          <code/>
+
+          <country/>
+        </postal>
+
+        <email>camilo@us.ntt.net</email>
+      </address>
+    </author>
+
+    <author fullname="Paolo Lucente" initials="P." surname="Lucente">
+      <organization>NTT Communications</organization>
+
+      <address>
+        <postal>
+          <street>Siriusdreef 70-72</street>
+
+          <city>Hoofddorp</city>
+
+          <region>WT</region>
+
+          <code>2132</code>
+
+          <country>Netherlands</country>
+        </postal>
+
+        <phone/>
+
+        <facsimile/>
+
+        <email>paolo@ntt.net</email>
+
+        <uri/>
+      </address>
+    </author>
+
+    <author fullname="Yunan Gu" initials="Y. " surname="Gu">
+      <organization>Huawei</organization>
+
+      <address>
+        <postal>
+          <street>Huawei Bld., No.156 Beiqing Rd.</street>
+
+          <city>Beijing</city>
+
+          <code>100095</code>
+
+          <country>China</country>
+        </postal>
+
+        <email>guyunan@huawei.com</email>
+      </address>
+    </author>
+
+    <date day="14" month="June" year="2019"/>
+
+    <abstract>
+      <t>BGP Monitoring Protocol (BMP) provides the monitoring of <xref
+      target="RFC7854">BGP adj-rib-in</xref>, <xref
+      target="I-D.ietf-grow-bmp-local-rib">BGP local-rib</xref> and <xref
+      target="I-D.ietf-grow-bmp-adj-rib-out">BGP adj-rib-out</xref> through
+      Route Monitoring (RM) Message. With the capability of allowing optional
+      data to be added to the RM Messages in the format of TLV
+      [draft-lucente-bmp-rm-t-flag], more information about the BGP Update
+      message encapsulated in the RM can be revealed. This document proposes
+      an extension to BMP to describe the BGP path status through the
+      definition and use of Path Marking TLV.</t>
+    </abstract>
+
+    <note title="Requirements Language">
+      <t>The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+      "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this
+      document are to be interpreted as described in <xref
+      target="RFC2119">RFC 2119</xref>.</t>
+    </note>
+  </front>
+
+  <middle>
+    <section title="Introduction">
+      <t>For a given prefix, multiple paths with different path status, e.g.,
+      the "best-path", the "best-external-path" and so on, may co-exist in the
+      BGP modular upon the local policy processing. In addition, during the
+      whole process, from receiving a BGP route to advertising it, a path can
+      also undergo various status in different processing states. Such path
+      status information is currently not carried in the BGP Update Message
+      <xref target="RFC4271">RFC4271</xref>. However, they can be useful to
+      enable a lot of applications. For example, for traffic steering purpose
+      in the SDN enviroment, the operator/SND controller needs the
+      reachability information of multiple paths to ensure the selected
+      optimized route is reachable. </t>
+
+      <t>This document defines a so-called Path Marking TLV to be attached in
+      the BMP Route Monitoring (RM) Message through the indication of the "T"
+      flag in the Per-Peer Header. Considering that the Path Marking TLV
+      describes the BGP Update Message in the RM, operational updates to <xref
+      target="RFC4271">RFC4271</xref> is also specified in this draft. </t>
+    </section>
+
+    <section title="Path Marking TLV for the RM Message">
+      <t>Per <xref target="RFC4271">RFC4271</xref>, the BMP RM Message
+      consists of the Common Header, Per-Peer Header, and the BGP Update PDU.
+      According to [draft-lucente-bmp-rm-t-flag], with the "T" flag (the
+      leftmost bit of the Peer Flag in the Per-Peer Header) set to "1", it
+      indicates there exists optional TLV trailing data in TLV format
+      following the BGP Update PDU. The optional TLV types are to be defined
+      per each application. </t>
+
+      <t>To include the path status along with each BGP path, we define the
+      Path Marking TLV, shown as follows. </t>
+
+      <t><figure>
+          <artwork align="center"><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-------------------------------+-------------------------------+
+|        Type (2 octets)        |     Length (2 octets)         |
++-------------------------------+-------------------------------+
+|                       Path Type(4 octets)                     |
++---------------------------------------------------------------+
+|                     Reason String(Variable)                   |
++---------------------------------------------------------------+
+
+                  Figure 1: Path Marking TLV]]></artwork>
+        </figure><list style="symbols">
+          <t>Type = TDB1 (2 Octets): Path Marking.</t>
+
+          <t>Length (2 Octets): indicates the length of the value field of the
+          Path Marking TLV. The value field further consists of the Path-Type
+          field and Reason String field.</t>
+
+          <t>Path-Type (4 Octets): indicates the path status of the BGP Update
+          PDU encapsulated in the RM Message. Currently 8 types of path status
+          are defined, as shown in Table 1. </t>
+
+          <t>Reason String (Variable): indicates the reasons/explanations of
+          the path status indicated in the Path Type field. The detailed
+          Reason String format is defined in Figure 2. </t>
+        </list></t>
+
+      <section title="Path Type">
+        <t><figure>
+            <artwork align="center"><![CDATA[+--------+--------------------+
+| Value  | Path type          |
++-----------------------------+
+| 0x0000 | Unknown            |
+| 0x0001 | Best path          |
+| 0x0002 | Best external path |
+| 0x0004 | Multi path         |
+| 0x0008 | Backup path        |
+| 0x0010 | Path with Path ID  |
+| 0x0020 | Uninstalled path   |
+| 0x0040 | Unreachable path   |
++--------+--------------------+
+
+     Table 1: Path Type ]]></artwork>
+          </figure></t>
+
+        <t>The Path type field contains a bitfield where each bit encodes a
+        specific role of the path. Multiple bits may be set when a path is
+        used in multiple roles.</t>
+
+        <t>The best-path is defined in <xref target="RFC4271">RFC4271</xref>
+        and the best-external path is defined in <xref
+        target="I-D.ietf-idr-best-external">draft-ietf-idr-best-external</xref>.</t>
+
+        <t>A multi-path is not the best-path but installed in the routing
+        information base (RIB) table. We use the convention that the best-path
+        is not considered a multi-path.</t>
+
+        <t>A backup path is also installed in the RIB, but it is not used
+        until all multipath(s) and the best-path become unreachable. Backup
+        paths are used for fast convergence in the event of failures.</t>
+
+        <t>The Path with Path ID bit is set when a Path ID is carried in the
+        BGP Update. The Path ID is the received/local/sent Path ID when the
+        Path Marking TLV is included in the adj-rib-in, local-rib, adj-rib-out
+        RM Messages, respectively.</t>
+
+        <t>All other reachable paths are marked as 'Uninstalled'.</t>
+
+        <t>Lastly, all paths that are considered unreachable are marked as
+        'Unreachable'. Unreachable paths may be sent only in special
+        cases.</t>
+      </section>
+
+      <section title="Reason String">
+        <t><figure>
+            <artwork align="center"><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-------------------------------+-------------------------------+
+|        Sub Type 1 (2 octets)  |     Length (2 octets)         |
++-------------------------------+-------------------------------+
+|                    Non-Best Reason String(Variable)           |
++-------------------------------+-------------------------------+
+|        Sub Type 2 (2 octets)  |     Length (2 octets)         |
++-------------------------------+-------------------------------+
+|                  Uninstall Reason String(Variable)            |
++-------------------------------+-------------------------------+
+|        Sub Type 3 (2 octets)  |     Length (2 octets)         |
++-------------------------------+-------------------------------+
+|                  Unreachable Reason String(Variable)          |
++---------------------------------------------------------------+
+
+                   Figure 2: Reason String filed
+]]></artwork>
+          </figure><list style="symbols">
+            <t>Sub Type 1 (2 Octets) = TDB2: Non-Best Reason String.</t>
+
+            <t>Length (2 Octets): indicates the length of the value filed of
+            the Non-Best Reason String.</t>
+
+            <t>Non-Best Reaon String (Variable): includes user specific
+            description of the non-best reason in the format of ASCII
+            string.</t>
+
+            <t>Sub Type 2 (2 Octets) = TDB3: Uninstalled Reson String.</t>
+
+            <t>Length (2 Octets): indicates the length of the value filed of
+            the Non-Best Reason String.</t>
+
+            <t>Uninstalled Reaon String (Variable): includes user specific
+            description of the uninstalled (into RIB) reason in the format of
+            ASCII string.</t>
+
+            <t>Sub Type 3 (2 Octets) = TDB4: Unreachable Reason String.</t>
+
+            <t>Length (2 Octets): indicates the length of the value filed of
+            the Non-Best Reason String.</t>
+
+            <t>Unreachable Reaon String (Variable): includes user specific
+            description of the unreachable reason in the format of ASCII
+            string.</t>
+          </list></t>
+      </section>
+    </section>
+
+    <section title="Operational Considerations">
+      <t>With extra bits following the BGP Update in the BMP RM Message, the
+      processing steps of the BMP server are updated as follows. </t>
+
+      <t><list style="numbers">
+          <t>The BMP server first parses the BMP common Header, and Per-Peer
+          Header of the RM Message, check the "T" flag in the Per-Peer Header.
+          </t>
+
+          <t>If the "T" flag is set to "0", then the BMP server follows the
+          conventional processing procedures per defined in <xref
+          target="RFC7854">RFC7854</xref></t>
+
+          <t>If the "T" flag is set to "1", after processing the Per-Peer
+          Header, the BMP server reads the Length field in the Header of the
+          BGP Update. Skip the BGP Update PDU with the indicated length, and
+          begin to process the data after the BGP Update, i.e., Optional TLVs.
+          </t>
+
+          <t>With the total length of the RM message indicated in the Length
+          field of the Common Header, the BMP server knows when the processing
+          of all Optional TLVs (e.g., the Path Marking TLV defined in this
+          document) following the BGP Update is finished. Then, the BMP server
+          goes back to process the BGP Update PDU. </t>
+        </list></t>
+    </section>
+
+    <section title="Acknowledgements">
+      <t>TBD.</t>
+    </section>
+
+    <section anchor="IANA" title="IANA Considerations">
+      <t> This document requests that IANA assign the following new parameters
+      to the BMP parameters name space.</t>
+
+      <section title="Path Marking TLV">
+        <t>This document defines the Path Marking TLV with Type = TDB1: Path
+        Marking (Section 2). </t>
+      </section>
+
+      <section title="Path Marking TLV Reason String">
+        <t>This document defines three new sub types of the Reason String in
+        the Path Marking TLV (Section 2.2).</t>
+
+        <t>Sub Type 1 = TDB2: Non-Best Reason String.</t>
+
+        <t>Sub Type 2 = TDB3: Uninstalled Reson String.</t>
+
+        <t>Sub Type 3 = TDB4: Unreachable Reason String.</t>
+      </section>
+    </section>
+
+    <section anchor="Security" title="Security Considerations">
+      <t> It is not believed that this document adds any additional security
+      considerations.</t>
+    </section>
+  </middle>
+
+  <back>
+    <references title="Normative References">
+      <?rfc include="reference.RFC.2119"?>
+
+      <?rfc include='reference.RFC.4271'?>
+
+      <?rfc include='reference.RFC.5492'?>
+
+      <?rfc include='reference.RFC.7854'?>
+
+      <?rfc include='reference.I-D.ietf-grow-bmp-local-rib'?>
+
+      <?rfc include='reference.I-D.ietf-grow-bmp-adj-rib-out'?>
+
+      <?rfc include='reference.I-D.ietf-idr-best-external'?>
+    </references>
+  </back>
+</rfc>
