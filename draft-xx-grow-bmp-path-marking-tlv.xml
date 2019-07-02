@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-xx-grow-bmp-path-marking-tlv-00"
+<rfc category="std" docName="draft-bmp-path-marking-tlv-00"
      ipr="trust200902">
   <front>
     <title abbrev="BMP path marking tlv">BMP Extension for Path Marking
@@ -21,16 +21,16 @@
 
       <address>
         <postal>
-          <street/>
+          <street>164-168, Carrer de Numancia</street>
 
-          <city/>
+          <city>Barcelona</city>
 
-          <code/>
+          <code>08029</code>
 
-          <country/>
+          <country>Spain</country>
         </postal>
 
-        <email>camilo@us.ntt.net</email>
+        <email>camilo@ntt.net</email>
       </address>
     </author>
 
@@ -60,6 +60,23 @@
       </address>
     </author>
 
+    <author fullname="Pierre Francois" initials="P." surname="Francois">
+      <organization></organization>
+
+      <address>
+        <postal>
+          <street/>
+
+          <city/>
+
+          <code/>
+
+          <country/>
+        </postal>
+
+        <email>pfrpfr@gmail.com</email>
+      </address>
+    </author>
     <author fullname="Yunan Gu" initials="Y. " surname="Gu">
       <organization>Huawei</organization>
 
@@ -163,18 +180,18 @@
 
       <section title="Path Type">
         <t><figure>
-            <artwork align="center"><![CDATA[+--------+--------------------+
-| Value  | Path type          |
-+-----------------------------+
-| 0x0000 | Unknown            |
-| 0x0001 | Best path          |
-| 0x0002 | Best external path |
-| 0x0004 | Multi path         |
-| 0x0008 | Backup path        |
-| 0x0010 | Path with Path ID  |
-| 0x0020 | Uninstalled path   |
-| 0x0040 | Unreachable path   |
-+--------+--------------------+
+            <artwork align="center"><![CDATA[+--------+----------------------+
+| Value  | Path type            |
++-------------------------------+
+| 0x0000 | Unknown              |
+| 0x0001 | Best path            |
+| 0x0002 | Best external path   |
+| 0x0004 | Multi path           |
+| 0x0008 | Backup path          |
+| 0x0010 | Path with Path ID    |
+| 0x0020 | Non-installed path   |
+| 0x0040 | Unreachable next-hop |
++--------+----------------------+
 
      Table 1: Path Type ]]></artwork>
           </figure></t>
@@ -192,7 +209,7 @@
         is not considered a multi-path.</t>
 
         <t>A backup path is also installed in the RIB, but it is not used
-        until all multipath(s) and the best-path become unreachable. Backup
+        until some or all multipath(s) and the best-path become unreachable. Backup
         paths are used for fast convergence in the event of failures.</t>
 
         <t>The Path with Path ID bit is set when a Path ID is carried in the
@@ -224,12 +241,12 @@
 |                  Unreachable Reason String(Variable)          |
 +---------------------------------------------------------------+
 
-                   Figure 2: Reason String filed
+                   Figure 2: Reason String field
 ]]></artwork>
           </figure><list style="symbols">
             <t>Sub Type 1 (2 Octets) = TDB2: Non-Best Reason String.</t>
 
-            <t>Length (2 Octets): indicates the length of the value filed of
+            <t>Length (2 Octets): indicates the length of the value field of
             the Non-Best Reason String.</t>
 
             <t>Non-Best Reaon String (Variable): includes user specific
@@ -238,7 +255,7 @@
 
             <t>Sub Type 2 (2 Octets) = TDB3: Uninstalled Reson String.</t>
 
-            <t>Length (2 Octets): indicates the length of the value filed of
+            <t>Length (2 Octets): indicates the length of the value field of
             the Non-Best Reason String.</t>
 
             <t>Uninstalled Reaon String (Variable): includes user specific
@@ -247,7 +264,7 @@
 
             <t>Sub Type 3 (2 Octets) = TDB4: Unreachable Reason String.</t>
 
-            <t>Length (2 Octets): indicates the length of the value filed of
+            <t>Length (2 Octets): indicates the length of the value field of
             the Non-Best Reason String.</t>
 
             <t>Unreachable Reaon String (Variable): includes user specific
@@ -303,7 +320,7 @@
 
         <t>Sub Type 1 = TDB2: Non-Best Reason String.</t>
 
-        <t>Sub Type 2 = TDB3: Uninstalled Reson String.</t>
+        <t>Sub Type 2 = TDB3: Uninstalled Reason String.</t>
 
         <t>Sub Type 3 = TDB4: Unreachable Reason String.</t>
       </section>
