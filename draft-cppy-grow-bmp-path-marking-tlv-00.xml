@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-bmp-path-marking-tlv-00"
+<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-00"
      ipr="trust200902">
   <front>
     <title abbrev="BMP path marking tlv">BMP Extension for Path Marking
@@ -129,7 +129,7 @@
       status information is currently not carried in the BGP Update Message
       <xref target="RFC4271">RFC4271</xref>. However, they can be useful to
       enable a lot of applications. For example, for traffic steering purpose
-      in the SDN enviroment, the operator/SND controller needs the
+      in the SDN enviroment, the operator/SDN controller needs the
       reachability information of multiple paths to ensure the selected
       optimized route is reachable. </t>
 
@@ -212,10 +212,10 @@
         until some or all primary paths become unreachable. Backup
         paths are used for fast convergence in the event of failures.</t>
 
-        <t>All other reachable paths are marked as 'Uninstalled'.</t>
+        <t>All other reachable paths are marked as 'Non-installed'.</t>
 
         <t>Lastly, all paths that are considered unreachable are marked as
-        'Unreachable'. Unreachable paths may be sent only in special
+        'Unreachable next-hop'. Unreachable paths may be sent only in special
         cases.</t>
       </section>
 
@@ -248,12 +248,12 @@
             description of the non-best reason in the format of ASCII
             string.</t>
 
-            <t>Sub Type 2 (2 Octets) = TDB3: Uninstalled Reson String.</t>
+            <t>Sub Type 2 (2 Octets) = TDB3: Uninstalled Reason String.</t>
 
             <t>Length (2 Octets): indicates the length of the value field of
             the Non-Best Reason String.</t>
 
-            <t>Uninstalled Reaon String (Variable): includes user specific
+            <t>Uninstalled Reason String (Variable): includes user specific
             description of the uninstalled (into RIB) reason in the format of
             ASCII string.</t>
 
@@ -262,7 +262,7 @@
             <t>Length (2 Octets): indicates the length of the value field of
             the Non-Best Reason String.</t>
 
-            <t>Unreachable Reaon String (Variable): includes user specific
+            <t>Unreachable Reason String (Variable): includes user specific
             description of the unreachable reason in the format of ASCII
             string.</t>
           </list></t>
