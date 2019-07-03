@@ -61,22 +61,23 @@
     </author>
 
     <author fullname="Pierre Francois" initials="P." surname="Francois">
-      <organization></organization>
+      <organization>INSA</organization>
 
       <address>
         <postal>
           <street/>
 
-          <city/>
+          <city>Lyon</city>
 
           <code/>
 
-          <country/>
+          <country>France</country>
         </postal>
 
-        <email>pfrpfr@gmail.com</email>
+        <email>Pierre.Francois@insa-lyon.fr</email>
       </address>
     </author>
+
     <author fullname="Yunan Gu" initials="Y. " surname="Gu">
       <organization>Huawei</organization>
 
