@@ -103,8 +103,8 @@
       target="I-D.ietf-grow-bmp-local-rib">BGP local-rib</xref> and <xref
       target="I-D.ietf-grow-bmp-adj-rib-out">BGP adj-rib-out</xref> through
       Route Monitoring (RM) Message. With the capability of allowing optional
-      data to be added to the RM Messages in the format of TLV
-      [draft-lucente-bmp-rm-t-flag], more information about the BGP Update
+      data to be added to the RM Messages in the format of TLV <xref
+      target="I-D.lucente-bmp-tlv">draft-lucente-bmp-tlv</xref>, more information about the BGP Update
       message encapsulated in the RM can be revealed. This document proposes
       an extension to BMP to describe the BGP path status through the
       definition and use of Path Marking TLV.</t>
@@ -132,20 +132,18 @@
       reachability information of multiple paths to ensure the selected
       optimized route is reachable. </t>
 
-      <t>This document defines a so-called Path Marking TLV to be attached in
-      the BMP Route Monitoring (RM) Message through the indication of the "T"
-      flag in the Per-Peer Header. Considering that the Path Marking TLV
-      describes the BGP Update Message in the RM, operational updates to <xref
-      target="RFC4271">RFC4271</xref> is also specified in this draft. </t>
+      <t>This document defines a so-called Path Marking TLV to convey the BGP 
+      path status information to the BMP server. The BMP Path Marking is defined
+      to be prepended in the BMP Route Monitoring (RM) Message. </t>
     </section>
 
     <section title="Path Marking TLV for the RM Message">
       <t>Per <xref target="RFC4271">RFC4271</xref>, the BMP RM Message
       consists of the Common Header, Per-Peer Header, and the BGP Update PDU.
-      According to [draft-lucente-bmp-rm-t-flag], with the "T" flag (the
-      leftmost bit of the Peer Flag in the Per-Peer Header) set to "1", it
-      indicates there exists optional TLV trailing data in TLV format
-      following the BGP Update PDU. The optional TLV types are to be defined
+      According to <xref
+      target="I-D.lucente-bmp-tlv">draft-lucente-bmp-tlv</xref>, optional trailing data in TLV format
+      is allowed in the BMP RM Message to convey characteristics of transported NLRIs (ie. to
+   help stateless parsing) or vendor-specific data. Such TLV types are to be defined
       per each application. </t>
 
       <t>To include the path status along with each BGP path, we define the
@@ -186,11 +184,10 @@
 | 0x0000 | Unknown              |
 | 0x0001 | Best path            |
 | 0x0002 | Best external path   |
-| 0x0004 | Multi path           |
+| 0x0004 | Primary path         |
 | 0x0008 | Backup path          |
-| 0x0010 | Path with Path ID    |
-| 0x0020 | Non-installed path   |
-| 0x0040 | Unreachable next-hop |
+| 0x0010 | Non-installed path   |
+| 0x0020 | Unreachable next-hop |
 +--------+----------------------+
 
      Table 1: Path Type ]]></artwork>
@@ -204,18 +201,15 @@
         and the best-external path is defined in <xref
         target="I-D.ietf-idr-best-external">draft-ietf-idr-best-external</xref>.</t>
 
-        <t>A multi-path is not the best-path but installed in the routing
-        information base (RIB) table. We use the convention that the best-path
-        is not considered a multi-path.</t>
+        <t>A primary path is a recursive or non-recursive path that can be
+        used all the time as long as a walk starting from this path can end to an 
+        adjacency <xref target="I-D.ietf-rtgwg-bgp-pic">draft-ietf-rtgwg-bgp-pic</xref>. 
+        A prefix can have more than one primary path. A best-path is also considered 
+        as a primary path.</t>
 
         <t>A backup path is also installed in the RIB, but it is not used
-        until some or all multipath(s) and the best-path become unreachable. Backup
+        until some or all primary paths become unreachable. Backup
         paths are used for fast convergence in the event of failures.</t>
-
-        <t>The Path with Path ID bit is set when a Path ID is carried in the
-        BGP Update. The Path ID is the received/local/sent Path ID when the
-        Path Marking TLV is included in the adj-rib-in, local-rib, adj-rib-out
-        RM Messages, respectively.</t>
 
         <t>All other reachable paths are marked as 'Uninstalled'.</t>
 
@@ -274,33 +268,6 @@
       </section>
     </section>
 
-    <section title="Operational Considerations">
-      <t>With extra bits following the BGP Update in the BMP RM Message, the
-      processing steps of the BMP server are updated as follows. </t>
-
-      <t><list style="numbers">
-          <t>The BMP server first parses the BMP common Header, and Per-Peer
-          Header of the RM Message, check the "T" flag in the Per-Peer Header.
-          </t>
-
-          <t>If the "T" flag is set to "0", then the BMP server follows the
-          conventional processing procedures per defined in <xref
-          target="RFC7854">RFC7854</xref></t>
-
-          <t>If the "T" flag is set to "1", after processing the Per-Peer
-          Header, the BMP server reads the Length field in the Header of the
-          BGP Update. Skip the BGP Update PDU with the indicated length, and
-          begin to process the data after the BGP Update, i.e., Optional TLVs.
-          </t>
-
-          <t>With the total length of the RM message indicated in the Length
-          field of the Common Header, the BMP server knows when the processing
-          of all Optional TLVs (e.g., the Path Marking TLV defined in this
-          document) following the BGP Update is finished. Then, the BMP server
-          goes back to process the BGP Update PDU. </t>
-        </list></t>
-    </section>
-
     <section title="Acknowledgements">
       <t>TBD.</t>
     </section>
@@ -347,6 +314,11 @@
       <?rfc include='reference.I-D.ietf-grow-bmp-adj-rib-out'?>
 
       <?rfc include='reference.I-D.ietf-idr-best-external'?>
+         
+      <?rfc include='reference.I-D.lucente-bmp-tlv'?>
+         
+      <?rfc include='reference.I-D.ietf-rtgwg-bgp-pic'?>
+   
     </references>
   </back>
 </rfc>
