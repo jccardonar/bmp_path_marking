@@ -99,11 +99,11 @@
     <date day="14" month="June" year="2019"/>
 
     <abstract>
-      <t>BGP Monitoring Protocol (BMP) provides the monitoring of <xref
+      <t>The BGP Monitoring Protocol (BMP) provides the monitoring of <xref
       target="RFC7854">BGP adj-rib-in</xref>, <xref
       target="I-D.ietf-grow-bmp-local-rib">BGP local-rib</xref> and <xref
       target="I-D.ietf-grow-bmp-adj-rib-out">BGP adj-rib-out</xref> through
-      Route Monitoring (RM) Message. With the capability of allowing optional
+      Route Monitoring (RM) messages. With the capability of allowing optional
       data to be added to the RM Messages in the format of TLV <xref
       target="I-D.lucente-bmp-tlv">draft-lucente-bmp-tlv</xref>, more information about the BGP Update
       message encapsulated in the RM can be revealed. This document proposes
@@ -123,13 +123,13 @@
     <section title="Introduction">
       <t>For a given prefix, multiple paths with different path status, e.g.,
       the "best-path", the "best-external-path" and so on, may co-exist in the
-      BGP modular upon the local policy processing. In addition, during the
+      BGP module upon the local policy processing. In addition, during the
       whole process, from receiving a BGP route to advertising it, a path can
       also undergo various status in different processing states. Such path
       status information is currently not carried in the BGP Update Message
       <xref target="RFC4271">RFC4271</xref>. However, they can be useful to
-      enable a lot of applications. For example, for traffic steering purpose
-      in the SDN enviroment, the operator/SDN controller needs the
+      enable a lot of applications. For example, for traffic steering purposes
+      in a SDN enviroment, the operator/SDN controller needs the
       reachability information of multiple paths to ensure the selected
       optimized route is reachable. </t>
 
