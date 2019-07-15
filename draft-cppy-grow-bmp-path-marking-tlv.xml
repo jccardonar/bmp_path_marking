@@ -219,6 +219,11 @@
         <t>Lastly, all paths that are considered unreachable are marked as
         'Unreachable next-hop'. Unreachable paths may be sent only in special
         cases.</t>
+
+	<t>Delivery of multiple paths per prefix MUST use ADD-PATH encoding
+        <xref target="RFC7911">RFC 7911</xref> for the BGP Update PDU and the
+	Route Monitoring ADD-PATH TLV <xref target="I-D.lucente-bmp-tlv">4.2</xref>
+	MUST be present and set to 1.</t>
       </section>
 
       <section title="Reason String">
@@ -313,6 +318,8 @@
       <?rfc include='reference.RFC.5492'?>
 
       <?rfc include='reference.RFC.7854'?>
+
+      <?rfc include='reference.RFC.7911'?>
 
       <?rfc include='reference.I-D.ietf-grow-bmp-local-rib'?>
 
