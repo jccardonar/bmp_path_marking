@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-00"
+<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-01"
      ipr="trust200902">
   <front>
     <title abbrev="BMP path marking tlv">BMP Extension for Path Marking
@@ -96,7 +96,25 @@
       </address>
     </author>
 
-    <date day="14" month="June" year="2019"/>
+    <author fullname="Thomas Graf" initials="T. " surname="Graf">
+      <organization>Swisscom</organization>
+
+      <address>
+        <postal>
+          <street>Binzring 17</street>
+
+          <city>Zurich</city>
+
+          <code>8045</code>
+
+          <country>Switzerland</country>
+        </postal>
+
+        <email>thomas.graf@swisscom.com</email>
+      </address>
+    </author>
+
+    <date day="16" month="July" year="2019"/>
 
     <abstract>
       <t>The BGP Monitoring Protocol (BMP) provides the monitoring of <xref
@@ -219,6 +237,11 @@
         <t>Lastly, all paths that are considered unreachable are marked as
         'Unreachable next-hop'. Unreachable paths may be sent only in special
         cases.</t>
+
+	<t>Delivery of multiple paths per prefix MUST use ADD-PATH encoding
+        <xref target="RFC7911">RFC 7911</xref> for the BGP Update PDU and the
+	Route Monitoring ADD-PATH TLV <xref target="I-D.lucente-bmp-tlv">4.2</xref>
+	MUST be present and set to 1.</t>
       </section>
 
       <section title="Reason String">
@@ -313,6 +336,8 @@
       <?rfc include='reference.RFC.5492'?>
 
       <?rfc include='reference.RFC.7854'?>
+
+      <?rfc include='reference.RFC.7911'?>
 
       <?rfc include='reference.I-D.ietf-grow-bmp-local-rib'?>
 
