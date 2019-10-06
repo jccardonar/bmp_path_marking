@@ -114,19 +114,16 @@
       </address>
     </author>
 
-    <date day="16" month="July" year="2019"/>
+    <date day="01" month="November" year="2019"/>
 
     <abstract>
-      <t>The BGP Monitoring Protocol (BMP) provides the monitoring of <xref
-      target="RFC7854">BGP adj-rib-in</xref>, <xref
-      target="I-D.ietf-grow-bmp-local-rib">BGP local-rib</xref> and <xref
-      target="I-D.ietf-grow-bmp-adj-rib-out">BGP adj-rib-out</xref> through
-      Route Monitoring (RM) messages. With the capability of allowing optional
-      data to be added to the RM Messages in the format of TLV <xref
-      target="I-D.lucente-bmp-tlv">draft-lucente-bmp-tlv</xref>, more information about the BGP Update
-      message encapsulated in the RM can be revealed. This document proposes
-      an extension to BMP to describe the BGP path status through the
-      definition and use of Path Marking TLV.</t>
+        <t>The BGP Monitoring Protocol (BMP) provides an interface for
+        obtaining BGP Path information. BGP Path Information is conveyed within
+        BMP Route Monitoring (RM) messages.  This document proposes an
+        extension to BMP to convey the status of a BGP path after being
+        processed by the BGP best-path selection algorithm.  This extension
+        makes use of the TLV mechanims described in <xref
+            target="I-D.lucente-bmp-tlv">draft-lucente-bmp-tlv</xref>.</t>
     </abstract>
 
     <note title="Requirements Language">
@@ -142,30 +139,35 @@
   <middle>
     <section title="Introduction">
       <t>For a given prefix, multiple paths with different path status, e.g.,
-      the "best-path", the "best-external-path" and so on, may co-exist in the
-      BGP module upon the local policy processing. In addition, during the
-      whole process, from receiving a BGP route to advertising it, a path can
-      also undergo various status in different processing states. Such path
-      status information is currently not carried in the BGP Update Message
-      <xref target="RFC4271">RFC4271</xref>. However, they can be useful to
-      enable a lot of applications. For example, for traffic steering purposes
-      in a SDN enviroment, the operator/SDN controller needs the
-      reachability information of multiple paths to ensure the selected
-      optimized route is reachable. </t>
+      the "best-path", "back-up path" and so on, may co-exist in the
+      BGP module after being processed by the local policy and the BGP 
+      decision process.  The path status information is currently not carried
+      in the BGP Update Message <xref target="RFC4271">RFC4271</xref> or in the
+      BMP Update Message <xref target="RFC7854">RFC7854</xref>.</t> 
+
+      <t>External systems can use the path status for various applications. 
+      The path status is commonly checked by operators when performing
+      troubleshooting. Having such status stored in a centralized system can
+      enable the development of tools facilitating this process. Optimisation
+      systems can include the path status in their process, and also use the
+      status as a validation source (since it can compare the calculated state
+      to the actual outcome of the network). As a final example, path status
+      information can complement other centralized sources of data, for
+      example, flow collectors.</t>
 
       <t>This document defines a so-called Path Marking TLV to convey the BGP 
       path status information to the BMP server. The BMP Path Marking is defined
-      to be prepended in the BMP Route Monitoring (RM) Message. </t>
+      to be prepended in the BMP Route Monitoring (RM) Message.</t>
     </section>
 
     <section title="Path Marking TLV for the RM Message">
-      <t>Per <xref target="RFC4271">RFC4271</xref>, the BMP RM Message
+      <t>As per <xref target="RFC4271">RFC4271</xref>, the BMP RM Message
       consists of the Common Header, Per-Peer Header, and the BGP Update PDU.
-      According to <xref
-      target="I-D.lucente-bmp-tlv">draft-lucente-bmp-tlv</xref>, optional trailing data in TLV format
-      is allowed in the BMP RM Message to convey characteristics of transported NLRIs (ie. to
-   help stateless parsing) or vendor-specific data. Such TLV types are to be defined
-      per each application. </t>
+      According to <xref target="I-D.lucente-bmp-tlv">draft-lucente-bmp-tlv</xref>
+      , optional trailing data in TLV format is allowed in the BMP RM Message
+      to convey characteristics of transported NLRIs (i.e. to help stateless
+      parsing) or vendor-specific data. Such TLV types are to be defined for
+      each application. </t>
 
       <t>To include the path status along with each BGP path, we define the
       Path Marking TLV, shown as follows. </t>
@@ -182,13 +184,13 @@
 
                   Figure 1: Path Marking TLV]]></artwork>
         </figure><list style="symbols">
-          <t>Type = TDB1 (2 Octets): Path Marking.</t>
+          <t>Type = TBD1 (2 Octets): Path Marking.</t>
 
           <t>Length (2 Octets): indicates the length of the value field of the
-          Path Marking TLV. The value field further consists of the Path-Type
+          Path Marking TLV. The value field further consists of the Path-Status
           field and Reason String field.</t>
 
-          <t>Path-Type (4 Octets): indicates the path status of the BGP Update
+          <t>Path-Status (4 Octets): indicates the path status of the BGP Update
           PDU encapsulated in the RM Message. Currently 8 types of path status
           are defined, as shown in Table 1. </t>
 
@@ -223,10 +225,11 @@
         target="I-D.ietf-idr-best-external">draft-ietf-idr-best-external</xref>.</t>
 
         <t>A primary path is a recursive or non-recursive path that can be
-        used all the time as long as a walk starting from this path can end to an 
-        adjacency <xref target="I-D.ietf-rtgwg-bgp-pic">draft-ietf-rtgwg-bgp-pic</xref>. 
-        A prefix can have more than one primary path. A best-path is also considered 
-        as a primary path.</t>
+        used all the time as long as a walk starting from this path can end to
+        an adjacency <xref target="I-D.ietf-rtgwg-bgp-pic">draft-ietf-rtgwg-bgp-pic</xref>.  
+        A prefix can have more than one primary path if multipath is configured
+        <xref target="I-D.lapukhov-bgp-ecmp-considerations">draft-lapukhov-bgp-ecmp-considerations</xref>.
+        A best-path is also considered as a primary path.</t>
 
         <t>A backup path is also installed in the RIB, but it is not used
         until some or all primary paths become unreachable. Backup
@@ -235,13 +238,8 @@
         <t>All other reachable paths are marked as 'Non-installed'.</t>
 
         <t>Lastly, all paths that are considered unreachable are marked as
-        'Unreachable next-hop'. Unreachable paths may be sent only in special
-        cases.</t>
-
-	<t>Delivery of multiple paths per prefix MUST use ADD-PATH encoding
-        <xref target="RFC7911">RFC 7911</xref> for the BGP Update PDU and the
-	Route Monitoring ADD-PATH TLV <xref target="I-D.lucente-bmp-tlv">4.2</xref>
-	MUST be present and set to 1.</t>
+        'Unreachable next-hop'. Unreachable paths may be sent only in some
+        specific cases.</t>
       </section>
 
       <section title="Reason String">
@@ -254,7 +252,7 @@
 +-------------------------------+-------------------------------+
 |        Sub Type 2 (2 octets)  |     Length (2 octets)         |
 +-------------------------------+-------------------------------+
-|                  Uninstall Reason String(Variable)            |
+|                 Uninstalled Reason String(Variable)           |
 +-------------------------------+-------------------------------+
 |        Sub Type 3 (2 octets)  |     Length (2 octets)         |
 +-------------------------------+-------------------------------+
@@ -262,34 +260,36 @@
 +---------------------------------------------------------------+
 
                    Figure 2: Reason String field
-]]></artwork>
-          </figure><list style="symbols">
-            <t>Sub Type 1 (2 Octets) = TDB2: Non-Best Reason String.</t>
+]]></artwork></figure></t>
+
+          <t>The reason string fields include multiple TLVs containing freeform
+          ASCII encoded messsages containing the reason of a specific path
+          status.</t>
+
+      <t><list style="symbols">
+            <t>Sub Type 1 (2 Octets) = TBD2: Non-Best Reason String.</t>
 
             <t>Length (2 Octets): indicates the length of the value field of
             the Non-Best Reason String.</t>
 
-            <t>Non-Best Reaon String (Variable): includes user specific
-            description of the non-best reason in the format of ASCII
-            string.</t>
+            <t>Non-Best Reason String (Variable): includes the reason why 
+            the path has a non-best status.</t>
 
-            <t>Sub Type 2 (2 Octets) = TDB3: Uninstalled Reason String.</t>
-
-            <t>Length (2 Octets): indicates the length of the value field of
-            the Non-Best Reason String.</t>
-
-            <t>Uninstalled Reason String (Variable): includes user specific
-            description of the uninstalled (into RIB) reason in the format of
-            ASCII string.</t>
-
-            <t>Sub Type 3 (2 Octets) = TDB4: Unreachable Reason String.</t>
+            <t>Sub Type 2 (2 Octets) = TBD3: Uninstalled Reason String.</t>
 
             <t>Length (2 Octets): indicates the length of the value field of
-            the Non-Best Reason String.</t>
+            the Uninstalled Reason String.</t>
 
-            <t>Unreachable Reason String (Variable): includes user specific
-            description of the unreachable reason in the format of ASCII
-            string.</t>
+            <t>Uninstalled Reason String (Variable): includes the reason why
+            the path has an uninstalled status.</t>
+
+            <t>Sub Type 3 (2 Octets) = TBD4: Unreachable Reason String.</t>
+
+            <t>Length (2 Octets): indicates the length of the value field of
+            the Unreachable Reason String.</t>
+
+            <t>Unreachable Reason String (Variable): includes the reason why
+            the path has an unreachable status.</t>
           </list></t>
       </section>
     </section>
@@ -303,7 +303,7 @@
       to the BMP parameters name space.</t>
 
       <section title="Path Marking TLV">
-        <t>This document defines the Path Marking TLV with Type = TDB1: Path
+        <t>This document defines the Path Marking TLV with Type = TBD1: Path
         Marking (Section 2). </t>
       </section>
 
@@ -311,11 +311,11 @@
         <t>This document defines three new sub types of the Reason String in
         the Path Marking TLV (Section 2.2).</t>
 
-        <t>Sub Type 1 = TDB2: Non-Best Reason String.</t>
+        <t>Sub Type 1 = TBD2: Non-Best Reason String.</t>
 
-        <t>Sub Type 2 = TDB3: Uninstalled Reason String.</t>
+        <t>Sub Type 2 = TBD3: Uninstalled Reason String.</t>
 
-        <t>Sub Type 3 = TDB4: Unreachable Reason String.</t>
+        <t>Sub Type 3 = TBD4: Unreachable Reason String.</t>
       </section>
     </section>
 
@@ -333,21 +333,15 @@
 
       <?rfc include='reference.RFC.4271'?>
 
-      <?rfc include='reference.RFC.5492'?>
-
       <?rfc include='reference.RFC.7854'?>
-
-      <?rfc include='reference.RFC.7911'?>
-
-      <?rfc include='reference.I-D.ietf-grow-bmp-local-rib'?>
-
-      <?rfc include='reference.I-D.ietf-grow-bmp-adj-rib-out'?>
 
       <?rfc include='reference.I-D.ietf-idr-best-external'?>
          
       <?rfc include='reference.I-D.lucente-bmp-tlv'?>
          
       <?rfc include='reference.I-D.ietf-rtgwg-bgp-pic'?>
+
+      <?rfc include='reference.I-D.lapukhov-bgp-ecmp-considerations'?>
    
     </references>
   </back>
