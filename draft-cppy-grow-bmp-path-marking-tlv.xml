@@ -140,7 +140,7 @@
     <section title="Introduction">
       <t>For a given prefix, multiple paths with different path status, e.g.,
       the "best-path", "back-up path" and so on, may co-exist in the
-      BGP module after being processed by the local policy and the BGP 
+      BGP RIB after being processed by the local policy and the BGP 
       decision process.  The path status information is currently not carried
       in the BGP Update Message <xref target="RFC4271">RFC4271</xref> or in the
       BMP Update Message <xref target="RFC7854">RFC7854</xref>.</t> 
@@ -151,9 +151,9 @@
       enable the development of tools facilitating this process. Optimisation
       systems can include the path status in their process, and also use the
       status as a validation source (since it can compare the calculated state
-      to the actual outcome of the network). As a final example, path status
-      information can complement other centralized sources of data, for
-      example, flow collectors.</t>
+      to the actual outcome of the network, such as primary and backup path).
+      As a final example, path status information can complement other
+      centralized sources of data, for example, flow collectors.</t>
 
       <t>This document defines a so-called Path Marking TLV to convey the BGP 
       path status information to the BMP server. The BMP Path Marking is defined
