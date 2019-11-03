@@ -2,5 +2,5 @@
 BMP path-marking draft
 
 # Instructions
-pip install -r requirements
+pip install -r requirements.txt
 xml2rfc draft-xx-grow-bmp-path-marking-tlv.xml --text

@@ -5,13 +5,13 @@
 Network Working Group                                         C. Cardona
 Internet-Draft                                                P. Lucente
 Intended status: Standards Track                                     NTT
-Expires: January 17, 2020                                    P. Francois
+Expires: May 3, 2020                                         P. Francois
                                                                     INSA
                                                                    Y. Gu
                                                                   Huawei
                                                                  T. Graf
                                                                 Swisscom
-                                                           July 16, 2019
+                                                        October 31, 2019
 
 
                    BMP Extension for Path Marking TLV
@@ -19,15 +19,13 @@ Expires: January 17, 2020                                    P. Francois
 
 Abstract
 
-   The BGP Monitoring Protocol (BMP) provides the monitoring of BGP adj-
-   rib-in [RFC7854], BGP local-rib [I-D.ietf-grow-bmp-local-rib] and BGP
-   adj-rib-out [I-D.ietf-grow-bmp-adj-rib-out] through Route Monitoring
-   (RM) messages.  With the capability of allowing optional data to be
-   added to the RM Messages in the format of TLV draft-lucente-bmp-tlv
-   [I-D.lucente-bmp-tlv], more information about the BGP Update message
-   encapsulated in the RM can be revealed.  This document proposes an
-   extension to BMP to describe the BGP path status through the
-   definition and use of Path Marking TLV.
+   The BGP Monitoring Protocol (BMP) provides an interface for obtaining
+   BGP Path information.  BGP Path Information is conveyed within BMP
+   Route Monitoring (RM) messages.  This document proposes an extension
+   to BMP to convey the status of a BGP path after being processed by
+   the BGP best-path selection algorithm.  This extension makes use of
+   the TLV mechanims described in draft-lucente-bmp-tlv
+   [I-D.lucente-bmp-tlv].
 
 Requirements Language
 
@@ -49,19 +47,18 @@ Status of This Memo
 
    Internet-Drafts are draft documents valid for a maximum of six months
    and may be updated, replaced, or obsoleted by other documents at any
-
-
-
-
-Cardona, et al.         Expires January 17, 2020                [Page 1]
-
-Internet-Draft            BMP path marking tlv                 July 2019
-
-
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on January 17, 2020.
+
+
+
+Cardona, et al.            Expires May 3, 2020                  [Page 1]
+
+Internet-Draft            BMP path marking tlv              October 2019
+
+
+   This Internet-Draft will expire on May 3, 2020.
 
 Copyright Notice
 
@@ -82,9 +79,9 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Path Marking TLV for the RM Message . . . . . . . . . . . . .   3
-     2.1.  Path Type . . . . . . . . . . . . . . . . . . . . . . . .   3
+     2.1.  Path Type . . . . . . . . . . . . . . . . . . . . . . . .   4
      2.2.  Reason String . . . . . . . . . . . . . . . . . . . . . .   4
-   3.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   5
+   3.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   6
    4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
      4.1.  Path Marking TLV  . . . . . . . . . . . . . . . . . . . .   6
      4.2.  Path Marking TLV Reason String  . . . . . . . . . . . . .   6
@@ -95,24 +92,30 @@ Table of Contents
 1.  Introduction
 
    For a given prefix, multiple paths with different path status, e.g.,
-   the "best-path", the "best-external-path" and so on, may co-exist in
-   the BGP module upon the local policy processing.  In addition, during
-   the whole process, from receiving a BGP route to advertising it, a
-   path can also undergo various status in different processing states.
-   Such path status information is currently not carried in the BGP
-   Update Message RFC4271 [RFC4271].  However, they can be useful to
-   enable a lot of applications.  For example, for traffic steering
-   purposes in a SDN enviroment, the operator/SDN controller needs the
-   reachability information of multiple paths to ensure the selected
-   optimized route is reachable.
+   the "best-path", "back-up path" and so on, may co-exist in the BGP
+   RIB after being processed by the local policy and the BGP decision
+   process.  The path status information is currently not carried in the
+   BGP Update Message RFC4271 [RFC4271] or in the BMP Update Message
+   RFC7854 [RFC7854].
+
+   External systems can use the path status for various applications.
+   The path status is commonly checked by operators when performing
+   troubleshooting.  Having such status stored in a centralized system
+   can enable the development of tools facilitating this process.
+   Optimisation systems can include the path status in their process,
+   and also use the status as a validation source (since it can compare
+   the calculated state to the actual outcome of the network, such as
+   primary and backup path).  As a final example, path status
 
 
 
-
-Cardona, et al.         Expires January 17, 2020                [Page 2]
+Cardona, et al.            Expires May 3, 2020                  [Page 2]
 
-Internet-Draft            BMP path marking tlv                 July 2019
+Internet-Draft            BMP path marking tlv              October 2019
 
+
+   information can complement other centralized sources of data, for
+   example, flow collectors.
 
    This document defines a so-called Path Marking TLV to convey the BGP
    path status information to the BMP server.  The BMP Path Marking is
@@ -120,12 +123,12 @@ Internet-Draft            BMP path marking tlv                 July 2019
 
 2.  Path Marking TLV for the RM Message
 
-   Per RFC4271 [RFC4271], the BMP RM Message consists of the Common
+   As per RFC4271 [RFC4271], the BMP RM Message consists of the Common
    Header, Per-Peer Header, and the BGP Update PDU.  According to draft-
-   lucente-bmp-tlv [I-D.lucente-bmp-tlv], optional trailing data in TLV
+   lucente-bmp-tlv [I-D.lucente-bmp-tlv] , optional trailing data in TLV
    format is allowed in the BMP RM Message to convey characteristics of
-   transported NLRIs (ie. to help stateless parsing) or vendor-specific
-   data.  Such TLV types are to be defined per each application.
+   transported NLRIs (i.e. to help stateless parsing) or vendor-specific
+   data.  Such TLV types are to be defined for each application.
 
    To include the path status along with each BGP path, we define the
    Path Marking TLV, shown as follows.
@@ -141,21 +144,20 @@ Internet-Draft            BMP path marking tlv                 July 2019
 
                        Figure 1: Path Marking TLV
 
-   o  Type = TDB1 (2 Octets): Path Marking.
+   o  Type = TBD1 (2 Octets): Path Marking.
 
    o  Length (2 Octets): indicates the length of the value field of the
       Path Marking TLV.  The value field further consists of the Path-
-      Type field and Reason String field.
+      Status field and Reason String field.
 
-   o  Path-Type (4 Octets): indicates the path status of the BGP Update
-      PDU encapsulated in the RM Message.  Currently 8 types of path
-      status are defined, as shown in Table 1.
+   o  Path-Status (4 Octets): indicates the path status of the BGP
+      Update PDU encapsulated in the RM Message.  Currently 8 types of
+      path status are defined, as shown in Table 1.
 
    o  Reason String (Variable): indicates the reasons/explanations of
       the path status indicated in the Path Type field.  The detailed
       Reason String format is defined in Figure 2.
 
-2.1.  Path Type
 
 
 
@@ -163,12 +165,12 @@ Internet-Draft            BMP path marking tlv                 July 2019
 
 
 
-
-
-Cardona, et al.         Expires January 17, 2020                [Page 3]
+Cardona, et al.            Expires May 3, 2020                  [Page 3]
 
-Internet-Draft            BMP path marking tlv                 July 2019
+Internet-Draft            BMP path marking tlv              October 2019
 
+
+2.1.  Path Type
 
                      +--------+----------------------+
                      | Value  | Path type            |
@@ -195,7 +197,9 @@ Internet-Draft            BMP path marking tlv                 July 2019
    A primary path is a recursive or non-recursive path that can be used
    all the time as long as a walk starting from this path can end to an
    adjacency draft-ietf-rtgwg-bgp-pic [I-D.ietf-rtgwg-bgp-pic].  A
-   prefix can have more than one primary path.  A best-path is also
+   prefix can have more than one primary path if multipath is configured
+   draft-lapukhov-bgp-ecmp-considerations
+   [I-D.lapukhov-bgp-ecmp-considerations].  A best-path is also
    considered as a primary path.
 
    A backup path is also installed in the RIB, but it is not used until
@@ -205,12 +209,8 @@ Internet-Draft            BMP path marking tlv                 July 2019
    All other reachable paths are marked as 'Non-installed'.
 
    Lastly, all paths that are considered unreachable are marked as
-   'Unreachable next-hop'.  Unreachable paths may be sent only in
-   special cases.
-
-   Delivery of multiple paths per prefix MUST use ADD-PATH encoding RFC
-   7911 [RFC7911] for the BGP Update PDU and the Route Monitoring ADD-
-   PATH TLV 4.2 [I-D.lucente-bmp-tlv] MUST be present and set to 1.
+   'Unreachable next-hop'.  Unreachable paths may be sent only in some
+   specific cases.
 
 2.2.  Reason String
 
@@ -221,9 +221,9 @@ Internet-Draft            BMP path marking tlv                 July 2019
 
 
 
-Cardona, et al.         Expires January 17, 2020                [Page 4]
+Cardona, et al.            Expires May 3, 2020                  [Page 4]
 
-Internet-Draft            BMP path marking tlv                 July 2019
+Internet-Draft            BMP path marking tlv              October 2019
 
 
       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -234,7 +234,7 @@ Internet-Draft            BMP path marking tlv                 July 2019
      +-------------------------------+-------------------------------+
      |        Sub Type 2 (2 octets)  |     Length (2 octets)         |
      +-------------------------------+-------------------------------+
-     |                  Uninstall Reason String(Variable)            |
+     |                 Uninstalled Reason String(Variable)           |
      +-------------------------------+-------------------------------+
      |        Sub Type 3 (2 octets)  |     Length (2 octets)         |
      +-------------------------------+-------------------------------+
@@ -243,44 +243,48 @@ Internet-Draft            BMP path marking tlv                 July 2019
 
                         Figure 2: Reason String field
 
-   o  Sub Type 1 (2 Octets) = TDB2: Non-Best Reason String.
+   The reason string fields include multiple TLVs containing freeform
+   ASCII encoded messsages containing the reason of a specific path
+   status.
+
+   o  Sub Type 1 (2 Octets) = TBD2: Non-Best Reason String.
 
    o  Length (2 Octets): indicates the length of the value field of the
       Non-Best Reason String.
 
-   o  Non-Best Reaon String (Variable): includes user specific
-      description of the non-best reason in the format of ASCII string.
+   o  Non-Best Reason String (Variable): includes the reason why the
+      path has a non-best status.
 
-   o  Sub Type 2 (2 Octets) = TDB3: Uninstalled Reason String.
-
-   o  Length (2 Octets): indicates the length of the value field of the
-      Non-Best Reason String.
-
-   o  Uninstalled Reason String (Variable): includes user specific
-      description of the uninstalled (into RIB) reason in the format of
-      ASCII string.
-
-   o  Sub Type 3 (2 Octets) = TDB4: Unreachable Reason String.
+   o  Sub Type 2 (2 Octets) = TBD3: Uninstalled Reason String.
 
    o  Length (2 Octets): indicates the length of the value field of the
-      Non-Best Reason String.
+      Uninstalled Reason String.
 
-   o  Unreachable Reason String (Variable): includes user specific
-      description of the unreachable reason in the format of ASCII
-      string.
+   o  Uninstalled Reason String (Variable): includes the reason why the
+      path has an uninstalled status.
+
+   o  Sub Type 3 (2 Octets) = TBD4: Unreachable Reason String.
+
+   o  Length (2 Octets): indicates the length of the value field of the
+      Unreachable Reason String.
+
+   o  Unreachable Reason String (Variable): includes the reason why the
+      path has an unreachable status.
+
+
+
+
+
+
+
+Cardona, et al.            Expires May 3, 2020                  [Page 5]
+
+Internet-Draft            BMP path marking tlv              October 2019
+
 
 3.  Acknowledgements
 
    TBD.
-
-
-
-
-
-Cardona, et al.         Expires January 17, 2020                [Page 5]
-
-Internet-Draft            BMP path marking tlv                 July 2019
-
 
 4.  IANA Considerations
 
@@ -289,7 +293,7 @@ Internet-Draft            BMP path marking tlv                 July 2019
 
 4.1.  Path Marking TLV
 
-   This document defines the Path Marking TLV with Type = TDB1: Path
+   This document defines the Path Marking TLV with Type = TBD1: Path
    Marking (Section 2).
 
 4.2.  Path Marking TLV Reason String
@@ -297,11 +301,11 @@ Internet-Draft            BMP path marking tlv                 July 2019
    This document defines three new sub types of the Reason String in the
    Path Marking TLV (Section 2.2).
 
-   Sub Type 1 = TDB2: Non-Best Reason String.
+   Sub Type 1 = TBD2: Non-Best Reason String.
 
-   Sub Type 2 = TDB3: Uninstalled Reason String.
+   Sub Type 2 = TBD3: Uninstalled Reason String.
 
-   Sub Type 3 = TDB4: Unreachable Reason String.
+   Sub Type 3 = TBD4: Unreachable Reason String.
 
 5.  Security Considerations
 
@@ -310,38 +314,29 @@ Internet-Draft            BMP path marking tlv                 July 2019
 
 6.  Normative References
 
-   [I-D.ietf-grow-bmp-adj-rib-out]
-              Evens, T., Bayraktar, S., Lucente, P., Mi, K., and S.
-              Zhuang, "Support for Adj-RIB-Out in BGP Monitoring
-              Protocol (BMP)", draft-ietf-grow-bmp-adj-rib-out-06 (work
-              in progress), June 2019.
-
-   [I-D.ietf-grow-bmp-local-rib]
-              Evens, T., Bayraktar, S., Bhardwaj, M., and P. Lucente,
-              "Support for Local RIB in BGP Monitoring Protocol (BMP)",
-              draft-ietf-grow-bmp-local-rib-04 (work in progress), June
-              2019.
-
    [I-D.ietf-idr-best-external]
               Marques, P., Fernando, R., Chen, E., Mohapatra, P., and H.
               Gredler, "Advertisement of the best external route in
               BGP", draft-ietf-idr-best-external-05 (work in progress),
               January 2012.
 
-
-
-
-
-
-Cardona, et al.         Expires January 17, 2020                [Page 6]
-
-Internet-Draft            BMP path marking tlv                 July 2019
-
-
    [I-D.ietf-rtgwg-bgp-pic]
               Bashandy, A., Filsfils, C., and P. Mohapatra, "BGP Prefix
-              Independent Convergence", draft-ietf-rtgwg-bgp-pic-09
-              (work in progress), April 2019.
+              Independent Convergence", draft-ietf-rtgwg-bgp-pic-10
+              (work in progress), October 2019.
+
+   [I-D.lapukhov-bgp-ecmp-considerations]
+              Lapukhov, P. and J. Tantsura, "Equal-Cost Multipath
+              Considerations for BGP", draft-lapukhov-bgp-ecmp-
+              considerations-02 (work in progress), July 2019.
+
+
+
+
+Cardona, et al.            Expires May 3, 2020                  [Page 6]
+
+Internet-Draft            BMP path marking tlv              October 2019
+
 
    [I-D.lucente-bmp-tlv]
               Lucente, P., Gu, Y., and H. Smit, "TLV support for BMP
@@ -358,19 +353,10 @@ Internet-Draft            BMP path marking tlv                 July 2019
               DOI 10.17487/RFC4271, January 2006,
               <https://www.rfc-editor.org/info/rfc4271>.
 
-   [RFC5492]  Scudder, J. and R. Chandra, "Capabilities Advertisement
-              with BGP-4", RFC 5492, DOI 10.17487/RFC5492, February
-              2009, <https://www.rfc-editor.org/info/rfc5492>.
-
    [RFC7854]  Scudder, J., Ed., Fernando, R., and S. Stuart, "BGP
               Monitoring Protocol (BMP)", RFC 7854,
               DOI 10.17487/RFC7854, June 2016,
               <https://www.rfc-editor.org/info/rfc7854>.
-
-   [RFC7911]  Walton, D., Retana, A., Chen, E., and J. Scudder,
-              "Advertisement of Multiple Paths in BGP", RFC 7911,
-              DOI 10.17487/RFC7911, July 2016,
-              <https://www.rfc-editor.org/info/rfc7911>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
@@ -387,13 +373,6 @@ Authors' Addresses
    Email: camilo@ntt.net
 
 
-
-
-Cardona, et al.         Expires January 17, 2020                [Page 7]
-
-Internet-Draft            BMP path marking tlv                 July 2019
-
-
    Paolo Lucente
    NTT
    Siriusdreef 70-72
@@ -401,6 +380,18 @@ Internet-Draft            BMP path marking tlv                 July 2019
    Netherlands
 
    Email: paolo@ntt.net
+
+
+
+
+
+
+
+
+
+Cardona, et al.            Expires May 3, 2020                  [Page 7]
+
+Internet-Draft            BMP path marking tlv              October 2019
 
 
    Pierre Francois
@@ -445,4 +436,13 @@ Internet-Draft            BMP path marking tlv                 July 2019
 
 
 
-Cardona, et al.         Expires January 17, 2020                [Page 8]
+
+
+
+
+
+
+
+
+
+Cardona, et al.            Expires May 3, 2020                  [Page 8]
