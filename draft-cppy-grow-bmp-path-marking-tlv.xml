@@ -123,7 +123,7 @@
         extension to BMP to convey the status of a BGP path after being
         processed by the BGP best-path selection algorithm.  This extension
         makes use of the TLV mechanims described in <xref
-            target="I-D.lucente-bmp-tlv">draft-lucente-bmp-tlv</xref>.</t>
+            target="I-D.ietf-grow-bmp-tlv">draft-ietf-grow-bmp-tlv</xref>.</t>
     </abstract>
 
     <note title="Requirements Language">
@@ -163,7 +163,7 @@
     <section title="Path Marking TLV for the RM Message">
       <t>As per <xref target="RFC4271">RFC4271</xref>, the BMP RM Message
       consists of the Common Header, Per-Peer Header, and the BGP Update PDU.
-      According to <xref target="I-D.lucente-bmp-tlv">draft-lucente-bmp-tlv</xref>
+      According to <xref target="I-D.ietf-grow-bmp-tlv">draft-ietf-grow-bmp-tlv</xref>
       , optional trailing data in TLV format is allowed in the BMP RM Message
       to convey characteristics of transported NLRIs (i.e. to help stateless
       parsing) or vendor-specific data. Such TLV types are to be defined for
@@ -337,7 +337,7 @@
 
       <?rfc include='reference.I-D.ietf-idr-best-external'?>
          
-      <?rfc include='reference.I-D.lucente-bmp-tlv'?>
+      <?rfc include='reference.I-D.ietf-grow-bmp-tlv'?>
          
       <?rfc include='reference.I-D.ietf-rtgwg-bgp-pic'?>
 
