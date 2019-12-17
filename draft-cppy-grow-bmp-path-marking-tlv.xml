@@ -195,8 +195,8 @@
           Path-Status field and Reason Code field.</t>
 
           <t>E bit (1 Bit) for Path Status: indicates if any
-          enterprise-specific reason code is used after the IANA-registered
-          reason code.</t>
+          enterprise-specific path status is used after the IANA-registered
+          path status code.</t>
 
           <t>Path Status (4 Octets): indicates the path status of the BGP
           Update PDU encapsulated in the RM Message. Currently 7 types of path
@@ -212,9 +212,9 @@
         </list></t>
 
       <section title="Path Status">
-        <t>The Path Status field contains a bitfield where each bit encodes a
-        specific role of the path. Multiple bits may be set when a path is
-        used in multiple roles.</t>
+        <t>The Path Status field contains a bit field where each bit encodes a
+            specific role of the path. Multiple bits may be set when multiple
+            path status apply to a path.</t>
 
         <t>Two encoding options for Path Status are described in the following
         two sections. </t>
@@ -300,9 +300,9 @@
       </section>
 
       <section title="Reason Code">
-        <t>The reason string fields include multiple TLVs containing freeform
-        ASCII encoded messsages containing the reason of a specific path
-        status.</t>
+        <t>The Reason Code field contains a bit field where each bit encodes a
+            specific reason. Multiple bits may be set when multiple reasons
+            apply to a path.</t>
 
         <section title="IANA-registered Reason Code Encoding">
           <t><figure>
