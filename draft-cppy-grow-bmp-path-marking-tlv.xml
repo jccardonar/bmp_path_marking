@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-01-20191216"
+<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-02"
      ipr="trust200902">
   <front>
     <title abbrev="BMP path marking tlv">BMP Extension for Path Marking
