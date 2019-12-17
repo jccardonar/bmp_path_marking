@@ -61,7 +61,7 @@
     </author>
 
     <author fullname="Pierre Francois" initials="P." surname="Francois">
-      <organization>INSA</organization>
+      <organization>INSA-Lyon</organization>
 
       <address>
         <postal>
@@ -187,7 +187,7 @@
         </figure></t>
 
       <t><list style="symbols">
-          <t>ype = TBD1 (2 Octets): indicates that it's the Path Marking
+          <t>Type = TBD1 (2 Octets): indicates that it's the Path Marking
           TLV.</t>
 
           <t>Length (2 Octets): indicates the length of the value field of the
@@ -229,8 +229,8 @@
           Figure 2:  IANA-registered encoding of Path Status
 ]]></artwork>
             </figure><list style="symbols">
-              <t>E bit (1 Bit): set to 0, indicating only IANA-registered path
-              status is used in this TLV.</t>
+              <t>E bit (1 Bit): set to 0, indicating that only IANA-registered
+                  path status is used in this TLV.</t>
 
               <t>IANA-registered Path Status (2 octets): indicates the
               IANA-registered path status, as specified in Table 1. </t>
@@ -256,9 +256,8 @@
           defined in <xref
           target="I-D.ietf-idr-best-external">draft-ietf-idr-best-external</xref>.</t>
 
-          <t>A primary path is a recursive or non-recursive path that can be
-          used all the time as long as a walk starting from this path can end
-          to an adjacency <xref
+          <t>A primary path is a recursive or non-recursive path whose 
+          nexthop resolution ends with an adjacency <xref
           target="I-D.ietf-rtgwg-bgp-pic">draft-ietf-rtgwg-bgp-pic</xref>. A
           prefix can have more than one primary path if multipath is
           configured <xref
@@ -313,8 +312,8 @@
 
           Figure 4:  IANA-registered encoding of Reason Code]]></artwork>
             </figure><list style="symbols">
-              <t>E bit (1 Bit): set to 0, indicating only IANA-registered
-              reason code is used in this TLV. With the E bit set to 0, the
+              <t>E bit (1 Bit): set to 0, indicating that only IANA-registered
+                  reason code is used in this TLV. With the E bit set to 0, the
               Length field of the Path Marking TLV SHOULD be set to 8.</t>
 
               <t>IANA-registered Reason Code (4 octets): indicates the
