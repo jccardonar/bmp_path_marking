@@ -221,8 +221,8 @@
 
         <section title="IANA-registered Path Status Encoding">
           <t><figure>
-              <artwork align="center"><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-------------------------------+-------------------------------+
+              <artwork align="center"><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
++-------------------------------+
 |E| IANA registered path status |
 +-------------------------------+
 
@@ -242,12 +242,14 @@
 | Value  | Path type            |
 +-------------------------------+
 | 0x0000 | Unknown              |
-| 0x0001 | Best path            |
-| 0x0002 | Best external path   |
-| 0x0004 | Primary path         |
-| 0x0008 | Backup path          |
-| 0x0010 | Non-installed path   |
-| 0x0020 | Invalid              |
+| 0x0001 | Invalid              |
+| 0x0002 | Best                 |
+| 0x0004 | Non-selected         |
+| 0x0008 | Primary              |
+| 0x0010 | Backup               |
+| 0x0020 | Non-installed        |
+| 0x0040 | Best external        |
+| 0x0080 | Add-Path             |
 +--------+----------------------+
 
      Table 1: Path Type ]]></artwork>
@@ -256,6 +258,11 @@
           defined in <xref
           target="I-D.ietf-idr-best-external">draft-ietf-idr-best-external</xref>.</t>
 
+          <t>An invalid path is a route that does not enter the BGP decision process.</t> 
+             
+          <t>A non-selected path is a route that is not selected in the BGP decision process. 
+          In other words, Best route and ECMP routes are not considered as non-selected.</t> 
+          
           <t>A primary path is a recursive or non-recursive path whose 
           nexthop resolution ends with an adjacency <xref
           target="I-D.ietf-rtgwg-bgp-pic">draft-ietf-rtgwg-bgp-pic</xref>. A
@@ -268,10 +275,13 @@
           until some or all primary paths become unreachable. Backup paths are
           used for fast convergence in the event of failures.</t>
 
-          <t>All other reachable paths are marked as 'Non-installed'.</t>
+          <t>A non-installed path refers to the route that is not installed into the IP
+          routing table.</t>
+             
+          <t>For the advertisement of multiple paths for the same address 
+          prefix without the new paths implicitly replacing any previous 
+          ones, the add-path status is applied <xref target="RFC7911">RFC7911</xref>.</t>
 
-          <t>Lastly, the Invalid path status describes the routes that are
-          rejected/dropped before the BGP decision process.</t>
         </section>
 
         <section title="Enterprise-specific Path Status Encoding">
@@ -325,11 +335,9 @@
           <t><figure>
               <artwork><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +---------------------------------------------------------------+
-|E|           IANA Registered Reason Code(4 octets)             |
+|E|                  Enterprise Number(4 octets)                |
 +---------------------------------------------------------------+
-|                    Enterprise Number(4 octets)                |
-+---------------------------------------------------------------+
-|                  E-specific Reason Code(variable)             |
++                  E-specific Reason Code(variable)             +
 ~                                                               ~
 +---------------------------------------------------------------+
 
@@ -390,6 +398,8 @@
       <?rfc include='reference.I-D.ietf-rtgwg-bgp-pic'?>
 
       <?rfc include='reference.I-D.lapukhov-bgp-ecmp-considerations'?>
+         
+      <?rfc include='reference.RFC.7911'?>
     </references>
   </back>
 </rfc>
