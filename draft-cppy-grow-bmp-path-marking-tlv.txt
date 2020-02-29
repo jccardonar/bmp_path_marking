@@ -5,17 +5,17 @@
 Network Working Group                                         C. Cardona
 Internet-Draft                                                P. Lucente
 Intended status: Standards Track                                     NTT
-Expires: May 3, 2020                                         P. Francois
-                                                                    INSA
+Expires: July 6, 2020                                        P. Francois
+                                                               INSA-Lyon
                                                                    Y. Gu
                                                                   Huawei
                                                                  T. Graf
                                                                 Swisscom
-                                                        October 31, 2019
+                                                        January 03, 2020
 
 
                    BMP Extension for Path Marking TLV
-                draft-cppy-grow-bmp-path-marking-tlv-01
+                draft-cppy-grow-bmp-path-marking-tlv-02
 
 Abstract
 
@@ -24,8 +24,8 @@ Abstract
    Route Monitoring (RM) messages.  This document proposes an extension
    to BMP to convey the status of a BGP path after being processed by
    the BGP best-path selection algorithm.  This extension makes use of
-   the TLV mechanims described in draft-ietf-grow-bmp-tlv
-   [I-D.ietf-grow-bmp-tlv].
+   the TLV mechanims described in draft-lucente-bmp-tlv
+   [I-D.lucente-bmp-tlv].
 
 Requirements Language
 
@@ -53,16 +53,16 @@ Status of This Memo
 
 
 
-Cardona, et al.            Expires May 3, 2020                  [Page 1]
+Cardona, et al.           Expires July 6, 2020                  [Page 1]
 
-Internet-Draft            BMP path marking tlv              October 2019
+Internet-Draft            BMP path marking tlv              January 2020
 
 
-   This Internet-Draft will expire on May 3, 2020.
+   This Internet-Draft will expire on July 6, 2020.
 
 Copyright Notice
 
-   Copyright (c) 2019 IETF Trust and the persons identified as the
+   Copyright (c) 2020 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -79,15 +79,19 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Path Marking TLV for the RM Message . . . . . . . . . . . . .   3
-     2.1.  Path Type . . . . . . . . . . . . . . . . . . . . . . . .   4
-     2.2.  Reason String . . . . . . . . . . . . . . . . . . . . . .   4
-   3.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   6
-   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
-     4.1.  Path Marking TLV  . . . . . . . . . . . . . . . . . . . .   6
-     4.2.  Path Marking TLV Reason String  . . . . . . . . . . . . .   6
-   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
-   6.  Normative References  . . . . . . . . . . . . . . . . . . . .   6
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   7
+     2.1.  Path Status . . . . . . . . . . . . . . . . . . . . . . .   4
+       2.1.1.  IANA-registered Path Status Encoding  . . . . . . . .   4
+       2.1.2.  Enterprise-specific Path Status Encoding  . . . . . .   5
+     2.2.  Reason Code . . . . . . . . . . . . . . . . . . . . . . .   6
+       2.2.1.  IANA-registered Reason Code Encoding  . . . . . . . .   6
+       2.2.2.  Enterprise-specific Reason Code Encoding  . . . . . .   6
+   3.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   7
+   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
+     4.1.  Path Marking TLV  . . . . . . . . . . . . . . . . . . . .   7
+     4.2.  Path Marking TLV Reason Code  . . . . . . . . . . . . . .   7
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
+   6.  Normative References  . . . . . . . . . . . . . . . . . . . .   7
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
 
 1.  Introduction
 
@@ -102,18 +106,18 @@ Table of Contents
    The path status is commonly checked by operators when performing
    troubleshooting.  Having such status stored in a centralized system
    can enable the development of tools facilitating this process.
+
+
+
+Cardona, et al.           Expires July 6, 2020                  [Page 2]
+
+Internet-Draft            BMP path marking tlv              January 2020
+
+
    Optimisation systems can include the path status in their process,
    and also use the status as a validation source (since it can compare
    the calculated state to the actual outcome of the network, such as
    primary and backup path).  As a final example, path status
-
-
-
-Cardona, et al.            Expires May 3, 2020                  [Page 2]
-
-Internet-Draft            BMP path marking tlv              October 2019
-
-
    information can complement other centralized sources of data, for
    example, flow collectors.
 
@@ -125,166 +129,218 @@ Internet-Draft            BMP path marking tlv              October 2019
 
    As per RFC4271 [RFC4271], the BMP RM Message consists of the Common
    Header, Per-Peer Header, and the BGP Update PDU.  According to draft-
-   ietf-grow-bmp-tlv [I-D.ietf-grow-bmp-tlv] , optional trailing data in
-   TLV format is allowed in the BMP RM Message to convey characteristics
-   of transported NLRIs (i.e. to help stateless parsing) or vendor-
-   specific data.  Such TLV types are to be defined for each
-   application.
+   lucente-bmp-tlv [I-D.lucente-bmp-tlv] , optional trailing data in TLV
+   format is allowed in the BMP RM Message to convey characteristics of
+   transported NLRIs (i.e. to help stateless parsing) or vendor-specific
+   data.  Such TLV types are to be defined for each application.
 
    To include the path status along with each BGP path, we define the
    Path Marking TLV, shown as follows.
 
       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
      +-------------------------------+-------------------------------+
-     |        Type (2 octets)        |     Length (2 octets)         |
+     |        Type (2 octets)        |       Length (2 octets)       |
      +-------------------------------+-------------------------------+
-     |                       Path Type(4 octets)                     |
+     |E|                    Path Status(variable)                    |
      +---------------------------------------------------------------+
-     |                     Reason String(Variable)                   |
+     |E|                    Reason Code(variable)                    |
      +---------------------------------------------------------------+
 
-                       Figure 1: Path Marking TLV
+                          Figure 1: Path Marking TLV
 
-   o  Type = TBD1 (2 Octets): Path Marking.
+   o  Type = TBD1 (2 Octets): indicates that it's the Path Marking TLV.
 
    o  Length (2 Octets): indicates the length of the value field of the
       Path Marking TLV.  The value field further consists of the Path-
-      Status field and Reason String field.
+      Status field and Reason Code field.
 
-   o  Path-Status (4 Octets): indicates the path status of the BGP
-      Update PDU encapsulated in the RM Message.  Currently 8 types of
+   o  E bit (1 Bit) for Path Status: indicates if any enterprise-
+      specific path status is used after the IANA-registered path status
+      code.
+
+   o  Path Status (4 Octets): indicates the path status of the BGP
+      Update PDU encapsulated in the RM Message.  Currently 7 types of
       path status are defined, as shown in Table 1.
 
-   o  Reason String (Variable): indicates the reasons/explanations of
-      the path status indicated in the Path Type field.  The detailed
-      Reason String format is defined in Figure 2.
 
 
 
-
-
-
-
-Cardona, et al.            Expires May 3, 2020                  [Page 3]
+Cardona, et al.           Expires July 6, 2020                  [Page 3]
 
-Internet-Draft            BMP path marking tlv              October 2019
+Internet-Draft            BMP path marking tlv              January 2020
 
 
-2.1.  Path Type
+   o  E bit (1 Bit) for Reason Code: indicates if any enterprise-
+      specific reason code is used after the IANA-registered reason
+      code.
+
+   o  Reason Code (Variable): indicates the reasons/explanations of the
+      path status indicated in the Path Type field.  The detailed Reason
+      Code field is defined in Section 2.2.
+
+2.1.  Path Status
+
+   The Path Status field contains a bit field where each bit encodes a
+   specific role of the path.  Multiple bits may be set when multiple
+   path status apply to a path.
+
+   Two encoding options for Path Status are described in the following
+   two sections.
+
+2.1.1.  IANA-registered Path Status Encoding
+
+        0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
+       +-------------------------------+
+       |E| IANA registered path status |
+       +-------------------------------+
+
+                 Figure 2:  IANA-registered encoding of Path Status
+
+   o  E bit (1 Bit): set to 0, indicating that only IANA-registered path
+      status is used in this TLV.
+
+   o  IANA-registered Path Status (2 octets): indicates the IANA-
+      registered path status, as specified in Table 1.
 
                      +--------+----------------------+
                      | Value  | Path type            |
                      +-------------------------------+
                      | 0x0000 | Unknown              |
-                     | 0x0001 | Best path            |
-                     | 0x0002 | Best external path   |
-                     | 0x0004 | Primary path         |
-                     | 0x0008 | Backup path          |
-                     | 0x0010 | Non-installed path   |
-                     | 0x0020 | Unreachable next-hop |
+                     | 0x0001 | Invalid              |
+                     | 0x0002 | Best                 |
+                     | 0x0004 | Non-selected         |
+                     | 0x0008 | Primary              |
+                     | 0x0010 | Backup               |
+                     | 0x0020 | Non-installed        |
+                     | 0x0040 | Best external        |
+                     | 0x0080 | Add-Path             |
                      +--------+----------------------+
 
                           Table 1: Path Type
 
-   The Path type field contains a bitfield where each bit encodes a
-   specific role of the path.  Multiple bits may be set when a path is
-   used in multiple roles.
+
+
+
+Cardona, et al.           Expires July 6, 2020                  [Page 4]
+
+Internet-Draft            BMP path marking tlv              January 2020
+
 
    The best-path is defined in RFC4271 [RFC4271] and the best-external
    path is defined in draft-ietf-idr-best-external
    [I-D.ietf-idr-best-external].
 
-   A primary path is a recursive or non-recursive path that can be used
-   all the time as long as a walk starting from this path can end to an
-   adjacency draft-ietf-rtgwg-bgp-pic [I-D.ietf-rtgwg-bgp-pic].  A
-   prefix can have more than one primary path if multipath is configured
-   draft-lapukhov-bgp-ecmp-considerations
-   [I-D.lapukhov-bgp-ecmp-considerations].  A best-path is also
-   considered as a primary path.
+   An invalid path is a route that does not enter the BGP decision
+   process.
+
+   A non-selected path is a route that is not selected in the BGP
+   decision process.  In other words, Best route and ECMP routes are not
+   considered as non-selected.
+
+   A primary path is a recursive or non-recursive path whose nexthop
+   resolution ends with an adjacency draft-ietf-rtgwg-bgp-pic
+   [I-D.ietf-rtgwg-bgp-pic].  A prefix can have more than one primary
+   path if multipath is configured draft-lapukhov-bgp-ecmp-
+   considerations [I-D.lapukhov-bgp-ecmp-considerations].  A best-path
+   is also considered as a primary path.
 
    A backup path is also installed in the RIB, but it is not used until
    some or all primary paths become unreachable.  Backup paths are used
    for fast convergence in the event of failures.
 
-   All other reachable paths are marked as 'Non-installed'.
+   A non-installed path refers to the route that is not installed into
+   the IP routing table.
 
-   Lastly, all paths that are considered unreachable are marked as
-   'Unreachable next-hop'.  Unreachable paths may be sent only in some
-   specific cases.
+   For the advertisement of multiple paths for the same address prefix
+   without the new paths implicitly replacing any previous ones, the
+   add-path status is applied RFC7911 [RFC7911].
 
-2.2.  Reason String
+2.1.2.  Enterprise-specific Path Status Encoding
+
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------------------------------------------------------+
+   |E|            Enterprise-Specific Path Type (4 octets)         |
+   +---------------------------------------------------------------+
+   |                    Enterprise Number(4 octets)                |
+   +---------------------------------------------------------------+
+
+       Figure 3: Enterprise-specific encoding of Path Status
+
+   o  E bit (1 Bit): set to 1, indicating enterprise-specific path
+      status is used in this TLV.
+
+   o  Enterprise-specific Path Type (4 octets): indicates enterprise-
+      specific path status, which remains to be defined.
+
+   o  Enterprise Number (4 octets): indicates the IANA enterprise number
+      IANA-PEN.
 
 
 
-
-
-
-
-
-Cardona, et al.            Expires May 3, 2020                  [Page 4]
+Cardona, et al.           Expires July 6, 2020                  [Page 5]
 
-Internet-Draft            BMP path marking tlv              October 2019
+Internet-Draft            BMP path marking tlv              January 2020
 
+
+2.2.  Reason Code
+
+   The Reason Code field contains a bit field where each bit encodes a
+   specific reason.  Multiple bits may be set when multiple reasons
+   apply to a path.
+
+2.2.1.  IANA-registered Reason Code Encoding
 
       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-     +-------------------------------+-------------------------------+
-     |        Sub Type 1 (2 octets)  |     Length (2 octets)         |
-     +-------------------------------+-------------------------------+
-     |                    Non-Best Reason String(Variable)           |
-     +-------------------------------+-------------------------------+
-     |        Sub Type 2 (2 octets)  |     Length (2 octets)         |
-     +-------------------------------+-------------------------------+
-     |                 Uninstalled Reason String(Variable)           |
-     +-------------------------------+-------------------------------+
-     |        Sub Type 3 (2 octets)  |     Length (2 octets)         |
-     +-------------------------------+-------------------------------+
-     |                  Unreachable Reason String(Variable)          |
+     +---------------------------------------------------------------+
+     |E|           IANA-registered Reason Code(4 octets)             |
      +---------------------------------------------------------------+
 
-                        Figure 2: Reason String field
+               Figure 4:  IANA-registered encoding of Reason Code
 
-   The reason string fields include multiple TLVs containing freeform
-   ASCII encoded messsages containing the reason of a specific path
-   status.
+   o  E bit (1 Bit): set to 0, indicating that only IANA-registered
+      reason code is used in this TLV.  With the E bit set to 0, the
+      Length field of the Path Marking TLV SHOULD be set to 8.
 
-   o  Sub Type 1 (2 Octets) = TBD2: Non-Best Reason String.
+   o  IANA-registered Reason Code (4 octets): indicates the IANA-
+      registered reason code of the path status.
 
-   o  Length (2 Octets): indicates the length of the value field of the
-      Non-Best Reason String.
+2.2.2.  Enterprise-specific Reason Code Encoding
 
-   o  Non-Best Reason String (Variable): includes the reason why the
-      path has a non-best status.
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------------------------------------------------------+
+   |E|                  Enterprise Number(4 octets)                |
+   +---------------------------------------------------------------+
+   +                  E-specific Reason Code(variable)             +
+   ~                                                               ~
+   +---------------------------------------------------------------+
 
-   o  Sub Type 2 (2 Octets) = TBD3: Uninstalled Reason String.
+       Figure 5: Enterprise-specific encoding of Reason Code
 
-   o  Length (2 Octets): indicates the length of the value field of the
-      Uninstalled Reason String.
+   o  E bit (1 Bit): set to 1, indicating enterprise-specific reason
+      code is also used in this TLV.
 
-   o  Uninstalled Reason String (Variable): includes the reason why the
-      path has an uninstalled status.
+   o  IANA-registered Reason Code (4 octets): indicates the IANA-
+      registered reason code of the path status.
 
-   o  Sub Type 3 (2 Octets) = TBD4: Unreachable Reason String.
+   o  Enterprise Number (4 octets): indicates the IANA enterprise number
+      IANA-PEN.
 
-   o  Length (2 Octets): indicates the length of the value field of the
-      Unreachable Reason String.
-
-   o  Unreachable Reason String (Variable): includes the reason why the
-      path has an unreachable status.
-
-
-
-
-
+   o  E-specific Reason Code (Variable): indicates enterprise-specific
+      reason code of the path status.
 
 
-Cardona, et al.            Expires May 3, 2020                  [Page 5]
+
+
+
+
+Cardona, et al.           Expires July 6, 2020                  [Page 6]
 
-Internet-Draft            BMP path marking tlv              October 2019
+Internet-Draft            BMP path marking tlv              January 2020
 
 
 3.  Acknowledgements
 
-   TBD.
+   We would like to thank Jeff Haas for his valuable comments.
 
 4.  IANA Considerations
 
@@ -296,16 +352,7 @@ Internet-Draft            BMP path marking tlv              October 2019
    This document defines the Path Marking TLV with Type = TBD1: Path
    Marking (Section 2).
 
-4.2.  Path Marking TLV Reason String
-
-   This document defines three new sub types of the Reason String in the
-   Path Marking TLV (Section 2.2).
-
-   Sub Type 1 = TBD2: Non-Best Reason String.
-
-   Sub Type 2 = TBD3: Uninstalled Reason String.
-
-   Sub Type 3 = TBD4: Unreachable Reason String.
+4.2.  Path Marking TLV Reason Code
 
 5.  Security Considerations
 
@@ -313,11 +360,6 @@ Internet-Draft            BMP path marking tlv              October 2019
    considerations.
 
 6.  Normative References
-
-   [I-D.ietf-grow-bmp-tlv]
-              Lucente, P., Gu, Y., and H. Smit, "TLV support for BMP
-              Route Monitoring and Peer Down Messages", draft-ietf-grow-
-              bmp-tlv-01 (work in progress), October 2019.
 
    [I-D.ietf-idr-best-external]
               Marques, P., Fernando, R., Chen, E., Mohapatra, P., and H.
@@ -330,23 +372,27 @@ Internet-Draft            BMP path marking tlv              October 2019
               Independent Convergence", draft-ietf-rtgwg-bgp-pic-10
               (work in progress), October 2019.
 
-
-
-
-Cardona, et al.            Expires May 3, 2020                  [Page 6]
-
-Internet-Draft            BMP path marking tlv              October 2019
-
-
    [I-D.lapukhov-bgp-ecmp-considerations]
               Lapukhov, P. and J. Tantsura, "Equal-Cost Multipath
               Considerations for BGP", draft-lapukhov-bgp-ecmp-
-              considerations-02 (work in progress), July 2019.
+              considerations-03 (work in progress), November 2019.
+
+   [I-D.lucente-bmp-tlv]
+              Lucente, P., Gu, Y., and H. Smit, "TLV support for BMP
+              Route Monitoring and Peer Down Messages", draft-lucente-
+              bmp-tlv-00 (work in progress), July 2019.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
+
+
+
+Cardona, et al.           Expires July 6, 2020                  [Page 7]
+
+Internet-Draft            BMP path marking tlv              January 2020
+
 
    [RFC4271]  Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., "A
               Border Gateway Protocol 4 (BGP-4)", RFC 4271,
@@ -357,6 +403,11 @@ Internet-Draft            BMP path marking tlv              October 2019
               Monitoring Protocol (BMP)", RFC 7854,
               DOI 10.17487/RFC7854, June 2016,
               <https://www.rfc-editor.org/info/rfc7854>.
+
+   [RFC7911]  Walton, D., Retana, A., Chen, E., and J. Scudder,
+              "Advertisement of Multiple Paths in BGP", RFC 7911,
+              DOI 10.17487/RFC7911, July 2016,
+              <https://www.rfc-editor.org/info/rfc7911>.
 
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
@@ -382,24 +433,21 @@ Authors' Addresses
    Email: paolo@ntt.net
 
 
-
-
-
-
-
-
-
-Cardona, et al.            Expires May 3, 2020                  [Page 7]
-
-Internet-Draft            BMP path marking tlv              October 2019
-
-
    Pierre Francois
-   INSA
+   INSA-Lyon
    Lyon
    France
 
    Email: Pierre.Francois@insa-lyon.fr
+
+
+
+
+
+
+Cardona, et al.           Expires July 6, 2020                  [Page 8]
+
+Internet-Draft            BMP path marking tlv              January 2020
 
 
    Yunan Gu
@@ -445,4 +493,12 @@ Internet-Draft            BMP path marking tlv              October 2019
 
 
 
-Cardona, et al.            Expires May 3, 2020                  [Page 8]
+
+
+
+
+
+
+
+
+Cardona, et al.           Expires July 6, 2020                  [Page 9]
