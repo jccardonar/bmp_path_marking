@@ -24,8 +24,9 @@ Abstract
    Route Monitoring (RM) messages.  This document proposes an extension
    to BMP to convey the status of a BGP path after being processed by
    the BGP best-path selection algorithm.  This extension makes use of
-   the TLV mechanims described in draft-lucente-bmp-tlv
-   [I-D.lucente-bmp-tlv].
+   the TLV mechanims described in draft-ietf-grow-bmp-tlv
+   [I-D.ietf-grow-bmp-tlv] and draft-lucente-grow-bmp-tlv-ebit
+   [I-D.lucente-grow-bmp-tlv-ebit].
 
 Requirements Language
 
@@ -49,7 +50,6 @@ Status of This Memo
    and may be updated, replaced, or obsoleted by other documents at any
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
-
 
 
 
@@ -129,10 +129,11 @@ Internet-Draft            BMP path marking tlv              January 2020
 
    As per RFC4271 [RFC4271], the BMP RM Message consists of the Common
    Header, Per-Peer Header, and the BGP Update PDU.  According to draft-
-   lucente-bmp-tlv [I-D.lucente-bmp-tlv] , optional trailing data in TLV
-   format is allowed in the BMP RM Message to convey characteristics of
-   transported NLRIs (i.e. to help stateless parsing) or vendor-specific
-   data.  Such TLV types are to be defined for each application.
+   ietf-grow-bmp-tlv [I-D.ietf-grow-bmp-tlv] , optional trailing data in
+   TLV format is allowed in the BMP RM Message to convey characteristics
+   of transported NLRIs (i.e. to help stateless parsing) or vendor-
+   specific data.  Such TLV types are to be defined for each
+   application.
 
    To include the path status along with each BGP path, we define the
    Path Marking TLV, shown as follows.
@@ -161,7 +162,6 @@ Internet-Draft            BMP path marking tlv              January 2020
    o  Path Status (4 Octets): indicates the path status of the BGP
       Update PDU encapsulated in the RM Message.  Currently 7 types of
       path status are defined, as shown in Table 1.
-
 
 
 
@@ -361,6 +361,11 @@ Internet-Draft            BMP path marking tlv              January 2020
 
 6.  Normative References
 
+   [I-D.ietf-grow-bmp-tlv]
+              Lucente, P., Gu, Y., and H. Smit, "TLV support for BMP
+              Route Monitoring and Peer Down Messages", draft-ietf-grow-
+              bmp-tlv-01 (work in progress), October 2019.
+
    [I-D.ietf-idr-best-external]
               Marques, P., Fernando, R., Chen, E., Mohapatra, P., and H.
               Gredler, "Advertisement of the best external route in
@@ -369,23 +374,18 @@ Internet-Draft            BMP path marking tlv              January 2020
 
    [I-D.ietf-rtgwg-bgp-pic]
               Bashandy, A., Filsfils, C., and P. Mohapatra, "BGP Prefix
-              Independent Convergence", draft-ietf-rtgwg-bgp-pic-10
-              (work in progress), October 2019.
+              Independent Convergence", draft-ietf-rtgwg-bgp-pic-11
+              (work in progress), February 2020.
 
    [I-D.lapukhov-bgp-ecmp-considerations]
               Lapukhov, P. and J. Tantsura, "Equal-Cost Multipath
               Considerations for BGP", draft-lapukhov-bgp-ecmp-
               considerations-03 (work in progress), November 2019.
 
-   [I-D.lucente-bmp-tlv]
-              Lucente, P., Gu, Y., and H. Smit, "TLV support for BMP
-              Route Monitoring and Peer Down Messages", draft-lucente-
-              bmp-tlv-00 (work in progress), July 2019.
-
-   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/info/rfc2119>.
+   [I-D.lucente-grow-bmp-tlv-ebit]
+              Lucente, P. and Y. Gu, "Support for Enterprise-specific
+              TLVs in the BGP Monitoring Protocol", draft-lucente-grow-
+              bmp-tlv-ebit-00 (work in progress), November 2019.
 
 
 
@@ -393,6 +393,11 @@ Cardona, et al.           Expires July 6, 2020                  [Page 7]
 
 Internet-Draft            BMP path marking tlv              January 2020
 
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
 
    [RFC4271]  Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., "A
               Border Gateway Protocol 4 (BGP-4)", RFC 4271,
@@ -433,12 +438,7 @@ Authors' Addresses
    Email: paolo@ntt.net
 
 
-   Pierre Francois
-   INSA-Lyon
-   Lyon
-   France
 
-   Email: Pierre.Francois@insa-lyon.fr
 
 
 
@@ -448,6 +448,14 @@ Authors' Addresses
 Cardona, et al.           Expires July 6, 2020                  [Page 8]
 
 Internet-Draft            BMP path marking tlv              January 2020
+
+
+   Pierre Francois
+   INSA-Lyon
+   Lyon
+   France
+
+   Email: Pierre.Francois@insa-lyon.fr
 
 
    Yunan Gu
@@ -466,14 +474,6 @@ Internet-Draft            BMP path marking tlv              January 2020
    Switzerland
 
    Email: thomas.graf@swisscom.com
-
-
-
-
-
-
-
-
 
 
 
