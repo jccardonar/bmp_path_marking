@@ -145,8 +145,7 @@ Internet-Draft            BMP path marking tlv                March 2020
 
                    Figure 1: Prefix Information TLV
 
-   o  Type = TBD1 (2 Octets): indicates that it's the Prefix Information
-      TLV.
+   o  Type = TBD1 (2 Octets): Prefix Information TLV.
 
    o  Length (2 Octets): indicates the length of the value field of the
       Prefix Information TLV.
@@ -162,6 +161,7 @@ Internet-Draft            BMP path marking tlv                March 2020
    As stated in Appendix F.1 of RFC4271 [RFC4271], multiple address
    prefixes with the same path attributes are allowed to be specified in
    one message.  However, such multiple prefixes may have different
+   prefix information, e.g., path status.  Thus, to indicate the path
 
 
 
@@ -170,7 +170,6 @@ Cardona, et al.         Expires September 9, 2020               [Page 3]
 Internet-Draft            BMP path marking tlv                March 2020
 
 
-   prefix information, e.g., path status.  Thus, to indicate the path
    status for each BGP prefix, we define the Path Marking sub-TLV.  The
    order of the Path Marking sub-TLVs MUST be in accordance with the
    prefix order of the Update PDU.
@@ -184,7 +183,7 @@ Internet-Draft            BMP path marking tlv                March 2020
 
       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
      +-------------------------------+-------------------------------+
-     |E|       Type (31 bits)        |       Length (2 octets)       |
+     |E|       Type (15 bits)        |       Length (2 octets)       |
      +-------------------------------+-------------------------------+
      |                      Path Status(4 octets)                    |
      +---------------------------------------------------------------+
@@ -195,8 +194,7 @@ Internet-Draft            BMP path marking tlv                March 2020
 
    o  E bit: For an IANA-registered sub-TLV, the E bit MUST be set to 0.
 
-   o  Type = TBD2 (31 Bits): indicates that it's the IANA-registered
-      Path Marking sub-TLV.
+   o  Type = TBD2 (31 Bits): Path Marking sub-TLV.
 
    o  Length (2 Octets): indicates the length of the value field of the
       Path Marking TLV.  The value field further consists of the Path-
@@ -209,6 +207,8 @@ Internet-Draft            BMP path marking tlv                March 2020
    o  Reason Code (4 Octets): indicates the reasons/explanations of the
       path status indicated in the Path Type field.  The detailed Reason
       Code bitmap remains to be defined.
+
+
 
 
 
@@ -286,7 +286,7 @@ Internet-Draft            BMP path marking tlv                March 2020
 
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-------------------------------+-------------------------------+
-   |E|       Type (31 bits)        |       Length (2 octets)       |
+   |E|       Type (15 bits)        |       Length (2 octets)       |
    +-------------------------------+-------------------------------+
    |                      PEN number (4 octets)                    |
    +---------------------------------------------------------------+
@@ -326,9 +326,9 @@ Internet-Draft            BMP path marking tlv                March 2020
    This document requests that IANA assign the following new parameters
    to the BMP parameters name space.
 
-   Type = TBD1 (2 Octets): indicates that it's the Prefix Information
-   TLV.
+   Type = TBD1 (2 Octets): Prefix Information TLV.
 
+   Type = TBD2 (31 Bits): Path Marking sub-TLV.
 
 
 
@@ -337,9 +337,6 @@ Cardona, et al.         Expires September 9, 2020               [Page 6]
 
 Internet-Draft            BMP path marking tlv                March 2020
 
-
-   Type = TBD2 (31 Bits): indicates that it's the IANA-registered Path
-   Marking sub-TLV.
 
 6.  Security Considerations
 
@@ -384,7 +381,10 @@ Internet-Draft            BMP path marking tlv                March 2020
               DOI 10.17487/RFC4271, January 2006,
               <https://www.rfc-editor.org/info/rfc4271>.
 
-
+   [RFC7854]  Scudder, J., Ed., Fernando, R., and S. Stuart, "BGP
+              Monitoring Protocol (BMP)", RFC 7854,
+              DOI 10.17487/RFC7854, June 2016,
+              <https://www.rfc-editor.org/info/rfc7854>.
 
 
 
@@ -393,11 +393,6 @@ Cardona, et al.         Expires September 9, 2020               [Page 7]
 
 Internet-Draft            BMP path marking tlv                March 2020
 
-
-   [RFC7854]  Scudder, J., Ed., Fernando, R., and S. Stuart, "BGP
-              Monitoring Protocol (BMP)", RFC 7854,
-              DOI 10.17487/RFC7854, June 2016,
-              <https://www.rfc-editor.org/info/rfc7854>.
 
    [RFC7911]  Walton, D., Retana, A., Chen, E., and J. Scudder,
               "Advertisement of Multiple Paths in BGP", RFC 7911,
@@ -436,8 +431,13 @@ Authors' Addresses
    Email: Pierre.Francois@insa-lyon.fr
 
 
+   Yunan Gu
+   Huawei
+   Huawei Bld., No.156 Beiqing Rd.
+   Beijing  100095
+   China
 
-
+   Email: guyunan@huawei.com
 
 
 
@@ -450,15 +450,6 @@ Cardona, et al.         Expires September 9, 2020               [Page 8]
 Internet-Draft            BMP path marking tlv                March 2020
 
 
-   Yunan Gu
-   Huawei
-   Huawei Bld., No.156 Beiqing Rd.
-   Beijing  100095
-   China
-
-   Email: guyunan@huawei.com
-
-
    Thomas Graf
    Swisscom
    Binzring 17
@@ -466,6 +457,15 @@ Internet-Draft            BMP path marking tlv                March 2020
    Switzerland
 
    Email: thomas.graf@swisscom.com
+
+
+
+
+
+
+
+
+
 
 
 
