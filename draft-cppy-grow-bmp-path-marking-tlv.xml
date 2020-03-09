@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-02"
+<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-03"
      ipr="trust200902">
   <front>
     <title abbrev="BMP path marking tlv">BMP Extension for Path Marking
@@ -114,7 +114,7 @@
       </address>
     </author>
 
-    <date day="03" month="January" year="2020"/>
+    <date day="08" month="March" year="2020"/>
 
     <abstract>
       <t>The BGP Monitoring Protocol (BMP) provides an interface for obtaining
@@ -123,7 +123,7 @@
       convey the status of a BGP path after being processed by the BGP
       best-path selection algorithm. This extension makes use of the TLV
       mechanims described in <xref
-      target="I-D.ietf-grow-bmp-tlv">draft-ietf-grow-bmp-tlv</xref> and <xref
+      target="I-D.grow-bmp-tlv">draft-grow-bmp-tlv</xref> and <xref
       target="I-D.lucente-grow-bmp-tlv-ebit">draft-lucente-grow-bmp-tlv-ebit
       </xref>.</t>
     </abstract>
@@ -162,202 +162,182 @@
       defined to be prepended in the BMP Route Monitoring (RM) Message.</t>
     </section>
 
-    <section title="Path Marking TLV for the RM Message">
-      <t>As per <xref target="RFC4271">RFC4271</xref>, the BMP RM Message
+    <section title="Prefix Information TLV for the RM Message">
+      <t>As per <xref target="RFC7854">RFC7854</xref>, the BMP RM Message
       consists of the Common Header, Per-Peer Header, and the BGP Update PDU.
-      According to <xref
-      target="I-D.ietf-grow-bmp-tlv">draft-ietf-grow-bmp-tlv</xref> , optional
-      trailing data in TLV format is allowed in the BMP RM Message to convey
-      characteristics of transported NLRIs (i.e. to help stateless parsing) or
-      vendor-specific data. Such TLV types are to be defined for each
-      application.</t>
+      According to <xref target="I-D.grow-bmp-tlv">draft-grow-bmp-tlv</xref> ,
+      optional trailing data in TLV format is allowed in the BMP RM Message to
+      convey characteristics of transported NLRIs (i.e. to help stateless
+      parsing) or vendor-specific data. Such TLV types are to be defined for
+      each application.</t>
 
-      <t>To include the path status along with each BGP path, we define the
-      Path Marking TLV, shown as follows.</t>
+      <t>This document defines the Prefix Information TLV to convey
+      descriptional information for route prefixes. The format is shown
+      below.</t>
 
       <t><figure>
-          <artwork align="center"><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+          <artwork><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-------------------------------+-------------------------------+
 |        Type (2 octets)        |       Length (2 octets)       |
++---------------------------------------------------------------+
+|        Count (2 octets)       |
 +-------------------------------+-------------------------------+
-|E|                    Path Status(variable)                    |
-+---------------------------------------------------------------+
-|E|                    Reason Code(variable)                    |
+|                 Prefix information value(variable)            |
 +---------------------------------------------------------------+
 
-                     Figure 1: Path Marking TLV ]]></artwork>
-        </figure></t>
-
-      <t><list style="symbols">
-          <t>Type = TBD1 (2 Octets): indicates that it's the Path Marking
-          TLV.</t>
+                Figure 1: Prefix Information TLV ]]></artwork>
+        </figure><list style="symbols">
+          <t>Type = TBD1 (2 Octets): indicates that it's the Prefix
+          Information TLV.</t>
 
           <t>Length (2 Octets): indicates the length of the value field of the
-          Path Marking TLV. The value field further consists of the
-          Path-Status field and Reason Code field.</t>
+          Prefix Information TLV.</t>
 
-          <t>E bit (1 Bit) for Path Status: indicates if any
-          enterprise-specific path status is used after the IANA-registered
-          path status code.</t>
+          <t>Count (2 Octets): indicates the number of sub TLVs followed in
+          the Prefix Information Value field.</t>
 
-          <t>Path Status (4 Octets): indicates the path status of the BGP
-          Update PDU encapsulated in the RM Message. Currently 7 types of path
-          status are defined, as shown in Table 1.</t>
-
-          <t>E bit (1 Bit) for Reason Code: indicates if any
-          enterprise-specific reason code is used after the IANA-registered
-          reason code.</t>
-
-          <t>Reason Code (Variable): indicates the reasons/explanations of the
-          path status indicated in the Path Type field. The detailed Reason
-          Code field is defined in Section 2.2.</t>
+          <t>Prefix information value (Variable): indicates the value of the
+          Prefix Informtion TLV, which consists of one or multiple sub
+          TLVs.</t>
         </list></t>
+    </section>
 
-      <section title="Path Status">
-        <t>The Path Status field contains a bit field where each bit encodes a
-            specific role of the path. Multiple bits may be set when multiple
-            path status apply to a path.</t>
+    <section title="Path Marking sub-TLV">
+      <t>As stated in Appendix F.1 of <xref target="RFC4271">RFC4271</xref>,
+      multiple address prefixes with the same path attributes are allowed to
+      be specified in one message. However, such multiple prefixes may have
+      different prefix information, e.g., path status. Thus, to indicate the
+      path status for each BGP prefix, we define the Path Marking sub-TLV. The
+      order of the Path Marking sub-TLVs MUST be in accordance with the prefix
+      order of the Update PDU.</t>
 
-        <t>Two encoding options for Path Status are described in the following
-        two sections. </t>
+      <t>The <xref target="I-D.lucente-grow-bmp-tlv-ebit">E-bit</xref>
+      mechanism allows the usage of vendor-specific TLVs in addition to
+      IANA-registered one. In this document, both encoding options for the
+      Path Marking sub-TLV are described.</t>
 
-        <section title="IANA-registered Path Status Encoding">
-          <t><figure>
-              <artwork align="center"><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
-+-------------------------------+
-|E| IANA registered path status |
-+-------------------------------+
-
-          Figure 2:  IANA-registered encoding of Path Status
-]]></artwork>
-            </figure><list style="symbols">
-              <t>E bit (1 Bit): set to 0, indicating that only IANA-registered
-                  path status is used in this TLV.</t>
-
-              <t>IANA-registered Path Status (2 octets): indicates the
-              IANA-registered path status, as specified in Table 1. </t>
-            </list></t>
-
-          <t><figure>
-              <artwork align="center"><![CDATA[
-+--------+----------------------+
-| Value  | Path type            |
-+-------------------------------+
-| 0x0000 | Unknown              |
-| 0x0001 | Invalid              |
-| 0x0002 | Best                 |
-| 0x0004 | Non-selected         |
-| 0x0008 | Primary              |
-| 0x0010 | Backup               |
-| 0x0020 | Non-installed        |
-| 0x0040 | Best external        |
-| 0x0080 | Add-Path             |
-+--------+----------------------+
-
-     Table 1: Path Type ]]></artwork>
-            </figure>The best-path is defined in <xref
-          target="RFC4271">RFC4271</xref> and the best-external path is
-          defined in <xref
-          target="I-D.ietf-idr-best-external">draft-ietf-idr-best-external</xref>.</t>
-
-          <t>An invalid path is a route that does not enter the BGP decision process.</t> 
-             
-          <t>A non-selected path is a route that is not selected in the BGP decision process. 
-          In other words, Best route and ECMP routes are not considered as non-selected.</t> 
-          
-          <t>A primary path is a recursive or non-recursive path whose 
-          nexthop resolution ends with an adjacency <xref
-          target="I-D.ietf-rtgwg-bgp-pic">draft-ietf-rtgwg-bgp-pic</xref>. A
-          prefix can have more than one primary path if multipath is
-          configured <xref
-          target="I-D.lapukhov-bgp-ecmp-considerations">draft-lapukhov-bgp-ecmp-considerations</xref>.
-          A best-path is also considered as a primary path.</t>
-
-          <t>A backup path is also installed in the RIB, but it is not used
-          until some or all primary paths become unreachable. Backup paths are
-          used for fast convergence in the event of failures.</t>
-
-          <t>A non-installed path refers to the route that is not installed into the IP
-          routing table.</t>
-             
-          <t>For the advertisement of multiple paths for the same address 
-          prefix without the new paths implicitly replacing any previous 
-          ones, the add-path status is applied <xref target="RFC7911">RFC7911</xref>.</t>
-
-        </section>
-
-        <section title="Enterprise-specific Path Status Encoding">
-          <t><figure>
-              <artwork><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      <section title="IANA-registered Path Markinig sub-TLV">
+        <t><figure>
+            <artwork align="center"><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-------------------------------+-------------------------------+
+|E|       Type (31 bits)        |       Length (2 octets)       |
++-------------------------------+-------------------------------+
+|                      Path Status(4 octets)                    |
 +---------------------------------------------------------------+
-|E|            Enterprise-Specific Path Type (4 octets)         |
-+---------------------------------------------------------------+
-|                    Enterprise Number(4 octets)                |
+|                      Reason Code(4 octets)                    |
 +---------------------------------------------------------------+
 
-    Figure 3: Enterprise-specific encoding of Path Status]]></artwork>
-            </figure><list style="symbols">
-              <t>E bit (1 Bit): set to 1, indicating enterprise-specific path
-              status is used in this TLV.</t>
+    Figure 2:IANA-Registered Encoding of Path Marking sub-TLV ]]></artwork>
+          </figure><list style="symbols">
+            <t>E bit: For an IANA-registered sub-TLV, the E bit MUST be set to
+            0.</t>
 
-              <t>Enterprise-specific Path Type (4 octets): indicates
-              enterprise-specific path status, which remains to be
-              defined.</t>
+            <t>Type = TBD2 (31 Bits): indicates that it's the IANA-registered
+            Path Marking sub-TLV.</t>
 
-              <t>Enterprise Number (4 octets): indicates the IANA enterprise
-              number IANA-PEN.</t>
-            </list></t>
-        </section>
+            <t>Length (2 Octets): indicates the length of the value field of
+            the Path Marking TLV. The value field further consists of the
+            Path-Status field and Reason Code field.</t>
+
+            <t>Path Status (4 Octets): indicates the path status of the BGP
+            Update PDU encapsulated in the RM Message. Currently 9 types of
+            path status are defined, as shown in Table 1.</t>
+
+            <t>Reason Code (4 Octets): indicates the reasons/explanations of
+            the path status indicated in the Path Type field. The detailed
+            Reason Code bitmap remains to be defined.</t>
+          </list><figure>
+            <artwork align="center"><![CDATA[
++------------+------------------+
+| Value      | Path type        |
++-------------------------------+
+| 0x00000000 | Unknown          |
+| 0x00000001 | Invalid          |
+| 0x00000002 | Best             |
+| 0x00000004 | Non-selected     |
+| 0x00000008 | Primary          |
+| 0x00000010 | Backup           |
+| 0x00000020 | Non+installed    |
+| 0x00000040 | Best external    |
+| 0x00000080 | Add-Path         |
++------------+------------------+
+
+Table 1: IANA-Registered Path Type ]]></artwork>
+          </figure>The Path Status field contains a bitmap where each bit
+        encodes a specific role of the path. Multiple bits may be set when
+        multiple path status apply to a path.</t>
+
+        <t><list style="symbols">
+            <t>The best-path is defined in <xref
+            target="RFC4271">RFC4271</xref> and the best-external path is
+            defined in <xref
+            target="I-D.ietf-idr-best-external">draft-ietf-idr-best-external</xref>.</t>
+
+            <t>An invalid path is a route that does not enter the BGP decision
+            process.</t>
+
+            <t>A non-selected path is a route that is not selected in the BGP
+                decision process. Back-up routes are considered non-selected,
+                while the best and ECMP routes are not considered as
+                non-selected.</t>
+
+            <t>A primary path is a recursive or non-recursive path whose
+            nexthop resolution ends with an adjacency <xref
+            target="I-D.ietf-rtgwg-bgp-pic">draft-ietf-rtgwg-bgp-pic</xref>. A
+            prefix can have more than one primary path if multipath is
+            configured <xref
+            target="I-D.lapukhov-bgp-ecmp-considerations">draft-lapukhov-bgp-ecmp-considerations</xref>.
+            A best-path is also considered as a primary path.</t>
+
+            <t>A backup path is also installed in the RIB, but it is not used
+            until some or all primary paths become unreachable. Backup paths
+            are used for fast convergence in the event of failures.</t>
+
+            <t>A non-installed path refers to the route that is not installed
+            into the IP routing table.</t>
+
+            <t>For the advertisement of multiple paths for the same address
+            prefix without the new paths implicitly replacing any previous
+            ones, the add-path status is applied <xref
+            target="RFC7911">RFC7911</xref>.</t>
+          </list></t>
       </section>
 
-      <section title="Reason Code">
-        <t>The Reason Code field contains a bit field where each bit encodes a
-            specific reason. Multiple bits may be set when multiple reasons
-            apply to a path.</t>
-
-        <section title="IANA-registered Reason Code Encoding">
-          <t><figure>
-              <artwork align="center"><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+      <section title="Enterprise-specific Path Marking sub-TLV">
+        <t><figure>
+            <artwork><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
++-------------------------------+-------------------------------+
+|E|       Type (31 bits)        |       Length (2 octets)       |
++-------------------------------+-------------------------------+
+|                      PEN number (4 octets)                    |
 +---------------------------------------------------------------+
-|E|           IANA-registered Reason Code(4 octets)             |
+|                      Path Status(4 octets)                    |
 +---------------------------------------------------------------+
-
-          Figure 4:  IANA-registered encoding of Reason Code]]></artwork>
-            </figure><list style="symbols">
-              <t>E bit (1 Bit): set to 0, indicating that only IANA-registered
-                  reason code is used in this TLV. With the E bit set to 0, the
-              Length field of the Path Marking TLV SHOULD be set to 8.</t>
-
-              <t>IANA-registered Reason Code (4 octets): indicates the
-              IANA-registered reason code of the path status.</t>
-            </list></t>
-        </section>
-
-        <section title="Enterprise-specific Reason Code Encoding">
-          <t><figure>
-              <artwork><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+---------------------------------------------------------------+
-|E|                  Enterprise Number(4 octets)                |
-+---------------------------------------------------------------+
-+                  E-specific Reason Code(variable)             +
-~                                                               ~
+|                      Reason Code(variable)                    |
 +---------------------------------------------------------------+
 
-    Figure 5: Enterprise-specific encoding of Reason Code]]></artwork>
-            </figure><list style="symbols">
-              <t>E bit (1 Bit): set to 1, indicating enterprise-specific
-              reason code is also used in this TLV.</t>
+ Figure 3: Enterprise-specific encoding of Path Markiing sub-TLV]]></artwork>
+          </figure><list style="symbols">
+            <t>E bit: For an Enterprise-specific sub-TLV, the E bit MUST be
+            set to 1.</t>
 
-              <t>IANA-registered Reason Code (4 octets): indicates the
-              IANA-registered reason code of the path status.</t>
+            <t>Type = 1 (31 Bits): indicates that it's the Enterprise-specific
+            Path Marking sub-TLV.</t>
 
-              <t>Enterprise Number (4 octets): indicates the IANA enterprise
-              number IANA-PEN.</t>
+            <t>Length (2 Octets): indicates the length of the value field of
+            the Path Marking TLV. The value field further consists of the
+            Path-Status field and Reason Code field.</t>
 
-              <t>E-specific Reason Code (Variable): indicates
-              enterprise-specific reason code of the path status.</t>
-            </list></t>
-        </section>
+            <t>PEN Number (4 octets): indicates the IANA enterprise number
+            IANA-PEN.</t>
+
+            <t>Path Status (4 Octets): indicates enterprise-specific path
+            status, which remains to be defined.</t>
+
+            <t>Reason Code (Variable): indicates the reasons/explanations of
+            the path status indicated in the Path Type field. The detailed
+            Reason Code string is to be defined.</t>
+          </list></t>
       </section>
     </section>
 
@@ -369,12 +349,11 @@
       <t>This document requests that IANA assign the following new parameters
       to the BMP parameters name space.</t>
 
-      <section title="Path Marking TLV">
-        <t>This document defines the Path Marking TLV with Type = TBD1: Path
-        Marking (Section 2).</t>
-      </section>
+      <t>Type = TBD1 (2 Octets): indicates that it's the Prefix Information
+      TLV.</t>
 
-      <section title="Path Marking TLV Reason Code"/>
+      <t>Type = TBD2 (31 Bits): indicates that it's the IANA-registered Path
+      Marking sub-TLV.</t>
     </section>
 
     <section anchor="Security" title="Security Considerations">
@@ -395,14 +374,14 @@
 
       <?rfc include='reference.I-D.ietf-idr-best-external'?>
 
-      <?rfc include='reference.I-D.ietf-grow-bmp-tlv'?>
+      <?rfc include='reference.I-D.grow-bmp-tlv'?>
 
       <?rfc include='reference.I-D.lucente-grow-bmp-tlv-ebit'?>
 
       <?rfc include='reference.I-D.ietf-rtgwg-bgp-pic'?>
 
       <?rfc include='reference.I-D.lapukhov-bgp-ecmp-considerations'?>
-         
+
       <?rfc include='reference.RFC.7911'?>
     </references>
   </back>
