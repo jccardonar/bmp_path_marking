@@ -231,7 +231,7 @@
             <t>E bit: For an IANA-registered sub-TLV, the E bit MUST be set to
             0.</t>
 
-            <t>Type = TBD2 (31 Bits): Path Marking sub-TLV.</t>
+            <t>Type = TBD2 (15 Bits): Path Marking sub-TLV.</t>
 
             <t>Length (2 Octets): indicates the length of the value field of
             the Path Marking TLV. The value field further consists of the
@@ -319,7 +319,7 @@ Table 1: IANA-Registered Path Type ]]></artwork>
             <t>E bit: For an Enterprise-specific sub-TLV, the E bit MUST be
             set to 1.</t>
 
-            <t>Type = 1 (31 Bits): indicates that it's the Enterprise-specific
+            <t>Type = 1 (15 Bits): indicates that it's the Enterprise-specific
             Path Marking sub-TLV.</t>
 
             <t>Length (2 Octets): indicates the length of the value field of
@@ -349,7 +349,7 @@ Table 1: IANA-Registered Path Type ]]></artwork>
 
       <t>Type = TBD1 (2 Octets): Prefix Information TLV.</t>
 
-      <t>Type = TBD2 (31 Bits): Path Marking sub-TLV.</t>
+      <t>Type = TBD2 (15 Bits): Path Marking sub-TLV.</t>
     </section>
 
     <section anchor="Security" title="Security Considerations">

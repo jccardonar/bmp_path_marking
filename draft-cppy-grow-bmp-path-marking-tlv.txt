@@ -194,7 +194,7 @@ Internet-Draft            BMP path marking tlv                March 2020
 
    o  E bit: For an IANA-registered sub-TLV, the E bit MUST be set to 0.
 
-   o  Type = TBD2 (31 Bits): Path Marking sub-TLV.
+   o  Type = TBD2 (15 Bits): Path Marking sub-TLV.
 
    o  Length (2 Octets): indicates the length of the value field of the
       Path Marking TLV.  The value field further consists of the Path-
@@ -300,7 +300,7 @@ Internet-Draft            BMP path marking tlv                March 2020
    o  E bit: For an Enterprise-specific sub-TLV, the E bit MUST be set
       to 1.
 
-   o  Type = 1 (31 Bits): indicates that it's the Enterprise-specific
+   o  Type = 1 (15 Bits): indicates that it's the Enterprise-specific
       Path Marking sub-TLV.
 
    o  Length (2 Octets): indicates the length of the value field of the
@@ -328,7 +328,7 @@ Internet-Draft            BMP path marking tlv                March 2020
 
    Type = TBD1 (2 Octets): Prefix Information TLV.
 
-   Type = TBD2 (31 Bits): Path Marking sub-TLV.
+   Type = TBD2 (15 Bits): Path Marking sub-TLV.
 
 
 
