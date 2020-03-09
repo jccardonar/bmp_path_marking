@@ -24,8 +24,9 @@ Abstract
    Route Monitoring (RM) messages.  This document proposes an extension
    to BMP to convey the status of a BGP path after being processed by
    the BGP best-path selection algorithm.  This extension makes use of
-   the TLV mechanims described in draft-grow-bmp-tlv [I-D.grow-bmp-tlv]
-   and draft-lucente-grow-bmp-tlv-ebit [I-D.lucente-grow-bmp-tlv-ebit].
+   the TLV mechanims described in draft-ietf-grow-bmp-tlv
+   [I-D.ietf-grow-bmp-tlv] and draft-lucente-grow-bmp-tlv-ebit
+   [I-D.lucente-grow-bmp-tlv-ebit].
 
 Requirements Language
 
@@ -49,7 +50,6 @@ Status of This Memo
    and may be updated, replaced, or obsoleted by other documents at any
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
-
 
 
 
@@ -125,7 +125,7 @@ Internet-Draft            BMP path marking tlv                March 2020
 
    As per RFC7854 [RFC7854], the BMP RM Message consists of the Common
    Header, Per-Peer Header, and the BGP Update PDU.  According to draft-
-   grow-bmp-tlv [I-D.grow-bmp-tlv] , optional trailing data in TLV
+   grow-bmp-tlv [I-D.ietf-grow-bmp-tlv] , optional trailing data in TLV
    format is allowed in the BMP RM Message to convey characteristics of
    transported NLRIs (i.e. to help stateless parsing) or vendor-specific
    data.  Such TLV types are to be defined for each application.
@@ -348,10 +348,10 @@ Internet-Draft            BMP path marking tlv                March 2020
 
 7.  Normative References
 
-   [I-D.grow-bmp-tlv]
+   [I-D.ietf-grow-bmp-tlv]
               Lucente, P., Gu, Y., and H. Smit, "TLV support for BMP
-              Route Monitoring and Peer Down Messages", draft-grow-bmp-
-              tlv-00 (work in progress), September 2019.
+              Route Monitoring and Peer Down Messages", draft-ietf-grow-
+              bmp-tlv-01 (work in progress), October 2019.
 
    [I-D.ietf-idr-best-external]
               Marques, P., Fernando, R., Chen, E., Mohapatra, P., and H.
