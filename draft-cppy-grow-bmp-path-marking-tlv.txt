@@ -15,7 +15,7 @@ Expires: September 9, 2020                                   P. Francois
 
 
                    BMP Extension for Path Marking TLV
-                draft-cppy-grow-bmp-path-marking-tlv-03
+                draft-cppy-grow-bmp-path-marking-tlv-04
 
 Abstract
 
@@ -80,7 +80,7 @@ Table of Contents
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Prefix Information TLV for the RM Message . . . . . . . . . .   3
    3.  Path Marking sub-TLV  . . . . . . . . . . . . . . . . . . . .   3
-     3.1.  IANA-registered Path Markinig sub-TLV . . . . . . . . . .   4
+     3.1.  IANA-registered Path Marking sub-TLV  . . . . . . . . . .   4
      3.2.  Enterprise-specific Path Marking sub-TLV  . . . . . . . .   6
    4.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   6
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
@@ -100,7 +100,7 @@ Table of Contents
    External systems can use the path status for various applications.
    The path status is commonly checked by operators when performing
    troubleshooting.  Having such status stored in a centralized system
-   can enable the development of tools facilitating this process.
+   can enable the development of tools that facilitate this process.
    Optimisation systems can include the path status in their process,
    and also use the status as a validation source (since it can compare
    the calculated state to the actual outcome of the network, such as
@@ -160,8 +160,8 @@ Internet-Draft            BMP path marking tlv                March 2020
 
    As stated in Appendix F.1 of RFC4271 [RFC4271], multiple address
    prefixes with the same path attributes are allowed to be specified in
-   one message.  However, such multiple prefixes may have different
-   prefix information, e.g., path status.  Thus, to indicate the path
+   one message.  However, these prefixes may have different path status
+   information.  Thus, to indicate the path status for each BGP prefix,
 
 
 
@@ -170,16 +170,16 @@ Cardona, et al.         Expires September 9, 2020               [Page 3]
 Internet-Draft            BMP path marking tlv                March 2020
 
 
-   status for each BGP prefix, we define the Path Marking sub-TLV.  The
-   order of the Path Marking sub-TLVs MUST be in accordance with the
-   prefix order of the Update PDU.
+   we define the Path Marking sub-TLV.  The order of the Path Marking
+   sub-TLVs MUST be in accordance with the prefix order of the Update
+   PDU.
 
    The E-bit [I-D.lucente-grow-bmp-tlv-ebit] mechanism allows the usage
    of vendor-specific TLVs in addition to IANA-registered one.  In this
    document, both encoding options for the Path Marking sub-TLV are
    described.
 
-3.1.  IANA-registered Path Markinig sub-TLV
+3.1.  IANA-registered Path Marking sub-TLV
 
       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
      +-------------------------------+-------------------------------+
@@ -235,7 +235,7 @@ Internet-Draft            BMP path marking tlv                March 2020
                     | 0x00000004 | Non-selected     |
                     | 0x00000008 | Primary          |
                     | 0x00000010 | Backup           |
-                    | 0x00000020 | Non+installed    |
+                    | 0x00000020 | Non-installed    |
                     | 0x00000040 | Best external    |
                     | 0x00000080 | Add-Path         |
                     +------------+------------------+
@@ -295,7 +295,7 @@ Internet-Draft            BMP path marking tlv                March 2020
    |                      Reason Code(variable)                    |
    +---------------------------------------------------------------+
 
-    Figure 3: Enterprise-specific encoding of Path Markiing sub-TLV
+    Figure 3: Enterprise-specific encoding of Path Marking sub-TLV
 
    o  E bit: For an Enterprise-specific sub-TLV, the E bit MUST be set
       to 1.
@@ -348,7 +348,7 @@ Internet-Draft            BMP path marking tlv                March 2020
    [I-D.ietf-grow-bmp-tlv]
               Lucente, P., Gu, Y., and H. Smit, "TLV support for BMP
               Route Monitoring and Peer Down Messages", draft-ietf-grow-
-              bmp-tlv-01 (work in progress), October 2019.
+              bmp-tlv-02 (work in progress), March 2020.
 
    [I-D.ietf-idr-best-external]
               Marques, P., Fernando, R., Chen, E., Mohapatra, P., and H.
@@ -364,12 +364,12 @@ Internet-Draft            BMP path marking tlv                March 2020
    [I-D.lapukhov-bgp-ecmp-considerations]
               Lapukhov, P. and J. Tantsura, "Equal-Cost Multipath
               Considerations for BGP", draft-lapukhov-bgp-ecmp-
-              considerations-03 (work in progress), November 2019.
+              considerations-04 (work in progress), May 2020.
 
    [I-D.lucente-grow-bmp-tlv-ebit]
               Lucente, P. and Y. Gu, "Support for Enterprise-specific
               TLVs in the BGP Monitoring Protocol", draft-lucente-grow-
-              bmp-tlv-ebit-00 (work in progress), November 2019.
+              bmp-tlv-ebit-01 (work in progress), May 2020.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
