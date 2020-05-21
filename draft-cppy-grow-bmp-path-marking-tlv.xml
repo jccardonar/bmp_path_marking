@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-03"
+<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-04"
      ipr="trust200902">
   <front>
     <title abbrev="BMP path marking tlv">BMP Extension for Path Marking
@@ -150,7 +150,7 @@
       <t>External systems can use the path status for various applications.
       The path status is commonly checked by operators when performing
       troubleshooting. Having such status stored in a centralized system can
-      enable the development of tools facilitating this process. Optimisation
+      enable the development of tools that facilitate this process. Optimisation
       systems can include the path status in their process, and also use the
       status as a validation source (since it can compare the calculated state
       to the actual outcome of the network, such as primary and backup path).
@@ -204,8 +204,8 @@
     <section title="Path Marking sub-TLV">
       <t>As stated in Appendix F.1 of <xref target="RFC4271">RFC4271</xref>,
       multiple address prefixes with the same path attributes are allowed to
-      be specified in one message. However, such multiple prefixes may have
-      different prefix information, e.g., path status. Thus, to indicate the
+      be specified in one message. However, these prefixes may have
+      different path status information. Thus, to indicate the
       path status for each BGP prefix, we define the Path Marking sub-TLV. The
       order of the Path Marking sub-TLVs MUST be in accordance with the prefix
       order of the Update PDU.</t>
@@ -215,7 +215,7 @@
       IANA-registered one. In this document, both encoding options for the
       Path Marking sub-TLV are described.</t>
 
-      <section title="IANA-registered Path Markinig sub-TLV">
+      <section title="IANA-registered Path Marking sub-TLV">
         <t><figure>
             <artwork align="center"><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-------------------------------+-------------------------------+
@@ -314,7 +314,7 @@ Table 1: IANA-Registered Path Type ]]></artwork>
 |                      Reason Code(variable)                    |
 +---------------------------------------------------------------+
 
- Figure 3: Enterprise-specific encoding of Path Markiing sub-TLV]]></artwork>
+ Figure 3: Enterprise-specific encoding of Path Marking sub-TLV]]></artwork>
           </figure><list style="symbols">
             <t>E bit: For an Enterprise-specific sub-TLV, the E bit MUST be
             set to 1.</t>
