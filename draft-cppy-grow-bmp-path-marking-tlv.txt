@@ -79,9 +79,9 @@ Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Prefix Information TLV for the RM Message . . . . . . . . . .   3
-   3.  Path Marking sub-TLV  . . . . . . . . . . . . . . . . . . . .   3
-     3.1.  IANA-registered Path Marking sub-TLV  . . . . . . . . . .   4
-     3.2.  Enterprise-specific Path Marking sub-TLV  . . . . . . . .   6
+   3.  Path Status sub-TLV . . . . . . . . . . . . . . . . . . . . .   3
+     3.1.  IANA-registered Path Status sub-TLV . . . . . . . . . . .   4
+     3.2.  Enterprise-specific Path Status sub-TLV . . . . . . . . .   6
    4.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   6
    5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
    6.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
@@ -156,7 +156,7 @@ Internet-Draft            BMP path marking tlv                March 2020
    o  Prefix information value (Variable): indicates the value of the
       Prefix Informtion TLV, which consists of one or multiple sub TLVs.
 
-3.  Path Marking sub-TLV
+3.  Path Status sub-TLV
 
    As stated in Appendix F.1 of RFC4271 [RFC4271], multiple address
    prefixes with the same path attributes are allowed to be specified in
@@ -170,16 +170,15 @@ Cardona, et al.         Expires September 9, 2020               [Page 3]
 Internet-Draft            BMP path marking tlv                March 2020
 
 
-   we define the Path Marking sub-TLV.  The order of the Path Marking
-   sub-TLVs MUST be in accordance with the prefix order of the Update
-   PDU.
+   we define the Path Status sub-TLV.  The order of the Path Status sub-
+   TLVs MUST be in accordance with the prefix order of the Update PDU.
 
    The E-bit [I-D.lucente-grow-bmp-tlv-ebit] mechanism allows the usage
    of vendor-specific TLVs in addition to IANA-registered one.  In this
-   document, both encoding options for the Path Marking sub-TLV are
+   document, both encoding options for the Path Status sub-TLV are
    described.
 
-3.1.  IANA-registered Path Marking sub-TLV
+3.1.  IANA-registered Path Status sub-TLV
 
       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
      +-------------------------------+-------------------------------+
@@ -190,14 +189,14 @@ Internet-Draft            BMP path marking tlv                March 2020
      |                      Reason Code(4 octets)                    |
      +---------------------------------------------------------------+
 
-         Figure 2:IANA-Registered Encoding of Path Marking sub-TLV
+         Figure 2:IANA-Registered Encoding of Path Status sub-TLV
 
    o  E bit: For an IANA-registered sub-TLV, the E bit MUST be set to 0.
 
-   o  Type = TBD2 (15 Bits): Path Marking sub-TLV.
+   o  Type = TBD2 (15 Bits): Path Status sub-TLV.
 
    o  Length (2 Octets): indicates the length of the value field of the
-      Path Marking TLV.  The value field further consists of the Path-
+      Path Status TLV.  The value field further consists of the Path-
       Status field and Reason Code field.
 
    o  Path Status (4 Octets): indicates the path status of the BGP
@@ -207,6 +206,7 @@ Internet-Draft            BMP path marking tlv                March 2020
    o  Reason Code (4 Octets): indicates the reasons/explanations of the
       path status indicated in the Path Type field.  The detailed Reason
       Code bitmap remains to be defined.
+
 
 
 
@@ -282,7 +282,7 @@ Cardona, et al.         Expires September 9, 2020               [Page 5]
 Internet-Draft            BMP path marking tlv                March 2020
 
 
-3.2.  Enterprise-specific Path Marking sub-TLV
+3.2.  Enterprise-specific Path Status sub-TLV
 
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-------------------------------+-------------------------------+
@@ -295,17 +295,17 @@ Internet-Draft            BMP path marking tlv                March 2020
    |                      Reason Code(variable)                    |
    +---------------------------------------------------------------+
 
-    Figure 3: Enterprise-specific encoding of Path Marking sub-TLV
+    Figure 3: Enterprise-specific encoding of Path Status sub-TLV
 
    o  E bit: For an Enterprise-specific sub-TLV, the E bit MUST be set
       to 1.
 
    o  Type = 1 (15 Bits): indicates that it's the Enterprise-specific
-      Path Marking sub-TLV.
+      Path Status sub-TLV.
 
    o  Length (2 Octets): indicates the length of the value field of the
-      Path Marking TLV.  The value field further consists of the Path-
-      Status field and Reason Code field.
+      Path Status sub-TLV.  The value field further consists of the
+      Path-Status field and Reason Code field.
 
    o  PEN Number (4 octets): indicates the IANA enterprise number IANA-
       PEN.
@@ -328,7 +328,7 @@ Internet-Draft            BMP path marking tlv                March 2020
 
    Type = TBD1 (2 Octets): Prefix Information TLV.
 
-   Type = TBD2 (15 Bits): Path Marking sub-TLV.
+   Type = TBD2 (15 Bits): Path Status sub-TLV.
 
 
 
