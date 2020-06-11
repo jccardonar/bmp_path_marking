@@ -201,21 +201,21 @@
         </list></t>
     </section>
 
-    <section title="Path Marking sub-TLV">
+    <section title="Path Status sub-TLV">
       <t>As stated in Appendix F.1 of <xref target="RFC4271">RFC4271</xref>,
       multiple address prefixes with the same path attributes are allowed to
       be specified in one message. However, these prefixes may have
       different path status information. Thus, to indicate the
-      path status for each BGP prefix, we define the Path Marking sub-TLV. The
-      order of the Path Marking sub-TLVs MUST be in accordance with the prefix
+      path status for each BGP prefix, we define the Path Status sub-TLV. The
+      order of the Path Status sub-TLVs MUST be in accordance with the prefix
       order of the Update PDU.</t>
 
       <t>The <xref target="I-D.lucente-grow-bmp-tlv-ebit">E-bit</xref>
       mechanism allows the usage of vendor-specific TLVs in addition to
       IANA-registered one. In this document, both encoding options for the
-      Path Marking sub-TLV are described.</t>
+      Path Status sub-TLV are described.</t>
 
-      <section title="IANA-registered Path Marking sub-TLV">
+      <section title="IANA-registered Path Status sub-TLV">
         <t><figure>
             <artwork align="center"><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-------------------------------+-------------------------------+
@@ -226,15 +226,15 @@
 |                      Reason Code(4 octets)                    |
 +---------------------------------------------------------------+
 
-    Figure 2:IANA-Registered Encoding of Path Marking sub-TLV ]]></artwork>
+    Figure 2:IANA-Registered Encoding of Path Status sub-TLV ]]></artwork>
           </figure><list style="symbols">
             <t>E bit: For an IANA-registered sub-TLV, the E bit MUST be set to
             0.</t>
 
-            <t>Type = TBD2 (15 Bits): Path Marking sub-TLV.</t>
+            <t>Type = TBD2 (15 Bits): Path Status sub-TLV.</t>
 
             <t>Length (2 Octets): indicates the length of the value field of
-            the Path Marking TLV. The value field further consists of the
+            the Path Status TLV. The value field further consists of the
             Path-Status field and Reason Code field.</t>
 
             <t>Path Status (4 Octets): indicates the path status of the BGP
@@ -301,7 +301,7 @@ Table 1: IANA-Registered Path Type ]]></artwork>
           </list></t>
       </section>
 
-      <section title="Enterprise-specific Path Marking sub-TLV">
+      <section title="Enterprise-specific Path Status sub-TLV">
         <t><figure>
             <artwork><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-------------------------------+-------------------------------+
@@ -314,16 +314,16 @@ Table 1: IANA-Registered Path Type ]]></artwork>
 |                      Reason Code(variable)                    |
 +---------------------------------------------------------------+
 
- Figure 3: Enterprise-specific encoding of Path Marking sub-TLV]]></artwork>
+ Figure 3: Enterprise-specific encoding of Path Status sub-TLV]]></artwork>
           </figure><list style="symbols">
             <t>E bit: For an Enterprise-specific sub-TLV, the E bit MUST be
             set to 1.</t>
 
             <t>Type = 1 (15 Bits): indicates that it's the Enterprise-specific
-            Path Marking sub-TLV.</t>
+            Path Status sub-TLV.</t>
 
             <t>Length (2 Octets): indicates the length of the value field of
-            the Path Marking TLV. The value field further consists of the
+            the Path Status sub-TLV. The value field further consists of the
             Path-Status field and Reason Code field.</t>
 
             <t>PEN Number (4 octets): indicates the IANA enterprise number
@@ -349,7 +349,7 @@ Table 1: IANA-Registered Path Type ]]></artwork>
 
       <t>Type = TBD1 (2 Octets): Prefix Information TLV.</t>
 
-      <t>Type = TBD2 (15 Bits): Path Marking sub-TLV.</t>
+      <t>Type = TBD2 (15 Bits): Path Status sub-TLV.</t>
     </section>
 
     <section anchor="Security" title="Security Considerations">
