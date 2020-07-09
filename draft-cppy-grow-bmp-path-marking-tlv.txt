@@ -5,28 +5,27 @@
 Network Working Group                                         C. Cardona
 Internet-Draft                                                P. Lucente
 Intended status: Standards Track                                     NTT
-Expires: September 9, 2020                                   P. Francois
+Expires: January 7, 2021                                     P. Francois
                                                                INSA-Lyon
                                                                    Y. Gu
                                                                   Huawei
                                                                  T. Graf
                                                                 Swisscom
-                                                          March 08, 2020
+                                                           July 06, 2020
 
 
-                   BMP Extension for Path Marking TLV
-                draft-cppy-grow-bmp-path-marking-tlv-04
+                 BMP Extension for Path Status sub-TLV
+                draft-cppy-grow-bmp-path-marking-tlv-05
 
 Abstract
 
    The BGP Monitoring Protocol (BMP) provides an interface for obtaining
    BGP Path information.  BGP Path Information is conveyed within BMP
    Route Monitoring (RM) messages.  This document proposes an extension
-   to BMP to convey the status of a BGP path after being processed by
-   the BGP best-path selection algorithm.  This extension makes use of
-   the TLV mechanims described in draft-ietf-grow-bmp-tlv
-   [I-D.ietf-grow-bmp-tlv] and draft-lucente-grow-bmp-tlv-ebit
-   [I-D.lucente-grow-bmp-tlv-ebit].
+   to BMP to convey the status of a BGP path before and after being
+   processed by the BGP best-path selection algorithm.  This extension
+   makes use of the Path Information TLV defined in [draft-cppy-grow-
+   bmp-path-info-tlv].
 
 Requirements Language
 
@@ -53,12 +52,13 @@ Status of This Memo
 
 
 
-Cardona, et al.         Expires September 9, 2020               [Page 1]
+
+Cardona, et al.          Expires January 7, 2021                [Page 1]
 
-Internet-Draft            BMP path marking tlv                March 2020
+Internet-Draft           BMP path status sub-tlv               July 2020
 
 
-   This Internet-Draft will expire on September 9, 2020.
+   This Internet-Draft will expire on January 7, 2021.
 
 Copyright Notice
 
@@ -78,14 +78,13 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
-   2.  Prefix Information TLV for the RM Message . . . . . . . . . .   3
-   3.  Path Status sub-TLV . . . . . . . . . . . . . . . . . . . . .   3
-     3.1.  IANA-registered Path Status sub-TLV . . . . . . . . . . .   4
-     3.2.  Enterprise-specific Path Status sub-TLV . . . . . . . . .   6
-   4.  Acknowledgements  . . . . . . . . . . . . . . . . . . . . . .   6
-   5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
-   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
-   7.  Normative References  . . . . . . . . . . . . . . . . . . . .   7
+   2.  Path Status sub-TLV . . . . . . . . . . . . . . . . . . . . .   3
+     2.1.  IANA-registered Path Status sub-TLV . . . . . . . . . . .   3
+     2.2.  Enterprise-specific Path Status sub-TLV . . . . . . . . .   6
+   3.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .   6
+   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
+   6.  Normative References  . . . . . . . . . . . . . . . . . . . .   7
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
 
 1.  Introduction
@@ -105,95 +104,46 @@ Table of Contents
    and also use the status as a validation source (since it can compare
    the calculated state to the actual outcome of the network, such as
    primary and backup path).  As a final example, path status
-
-
-
-
-Cardona, et al.         Expires September 9, 2020               [Page 2]
-
-Internet-Draft            BMP path marking tlv                March 2020
-
-
    information can complement other centralized sources of data, for
    example, flow collectors.
 
-   This document defines a so-called Path Marking TLV to convey the BGP
-   path status information to the BMP server.  The BMP Path Marking is
-   defined to be prepended in the BMP Route Monitoring (RM) Message.
-
-2.  Prefix Information TLV for the RM Message
-
-   As per RFC7854 [RFC7854], the BMP RM Message consists of the Common
-   Header, Per-Peer Header, and the BGP Update PDU.  According to draft-
-   grow-bmp-tlv [I-D.ietf-grow-bmp-tlv] , optional trailing data in TLV
-   format is allowed in the BMP RM Message to convey characteristics of
-   transported NLRIs (i.e. to help stateless parsing) or vendor-specific
-   data.  Such TLV types are to be defined for each application.
-
-   This document defines the Prefix Information TLV to convey
-   descriptional information for route prefixes.  The format is shown
-   below.
-
-    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-   +-------------------------------+-------------------------------+
-   |        Type (2 octets)        |       Length (2 octets)       |
-   +---------------------------------------------------------------+
-   |        Count (2 octets)       |
-   +-------------------------------+-------------------------------+
-   |                 Prefix information value(variable)            |
-   +---------------------------------------------------------------+
-
-                   Figure 1: Prefix Information TLV
-
-   o  Type = TBD1 (2 Octets): Prefix Information TLV.
-
-   o  Length (2 Octets): indicates the length of the value field of the
-      Prefix Information TLV.
-
-   o  Count (2 Octets): indicates the number of sub TLVs followed in the
-      Prefix Information Value field.
-
-   o  Prefix information value (Variable): indicates the value of the
-      Prefix Informtion TLV, which consists of one or multiple sub TLVs.
-
-3.  Path Status sub-TLV
-
-   As stated in Appendix F.1 of RFC4271 [RFC4271], multiple address
-   prefixes with the same path attributes are allowed to be specified in
-   one message.  However, these prefixes may have different path status
-   information.  Thus, to indicate the path status for each BGP prefix,
 
 
-
-Cardona, et al.         Expires September 9, 2020               [Page 3]
+Cardona, et al.          Expires January 7, 2021                [Page 2]
 
-Internet-Draft            BMP path marking tlv                March 2020
+Internet-Draft           BMP path status sub-tlv               July 2020
 
 
-   we define the Path Status sub-TLV.  The order of the Path Status sub-
-   TLVs MUST be in accordance with the prefix order of the Update PDU.
+   This document defines a so-called Path Status sub-TLV to convey the
+   BGP path status to the BMP server.  The BMP Path Status sub-TLV is
+   encapsulated within the BMP Path Information TLV carried in the BMP
+   Route Monitoring (RM) Message [draft-cppy-grow-bmp-path-info-tlv].
 
-   The E-bit [I-D.lucente-grow-bmp-tlv-ebit] mechanism allows the usage
-   of vendor-specific TLVs in addition to IANA-registered one.  In this
-   document, both encoding options for the Path Status sub-TLV are
-   described.
+2.  Path Status sub-TLV
 
-3.1.  IANA-registered Path Status sub-TLV
+   As stated in [draft-cppy-grow-bmp-path-info-tlv], the order of the
+   sub-TLVs MUST be in accordance with the prefix order encapsulated in
+   the Update PDU.  This document defines two types of Path Status sub-
+   TLVs: one is IANA-registered Path Status sub-TLV, and the other is
+   Enterprise-specific Path Status sub-TLV.
+
+2.1.  IANA-registered Path Status sub-TLV
 
       0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
      +-------------------------------+-------------------------------+
-     |E|       Type (15 bits)        |       Length (2 octets)       |
+     |E|       Type (31 bits)        |       Length (2 octets)       |
      +-------------------------------+-------------------------------+
      |                      Path Status(4 octets)                    |
      +---------------------------------------------------------------+
      |                      Reason Code(4 octets)                    |
      +---------------------------------------------------------------+
 
-         Figure 2:IANA-Registered Encoding of Path Status sub-TLV
+         Figure 2:IANA-Registered Encoding of path status sub-TLV
 
    o  E bit: For an IANA-registered sub-TLV, the E bit MUST be set to 0.
 
-   o  Type = TBD2 (15 Bits): Path Status sub-TLV.
+   o  Type = TBD2 (31 Bits): indicates that it's the IANA-registered
+      Path Status sub-TLV.
 
    o  Length (2 Octets): indicates the length of the value field of the
       Path Status TLV.  The value field further consists of the Path-
@@ -204,8 +154,8 @@ Internet-Draft            BMP path marking tlv                March 2020
       path status are defined, as shown in Table 1.
 
    o  Reason Code (4 Octets): indicates the reasons/explanations of the
-      path status indicated in the Path Type field.  The detailed Reason
-      Code bitmap remains to be defined.
+      path status indicated in the Path Type field.  The currently
+      defined reason codes are shown in Table 2.
 
 
 
@@ -215,15 +165,9 @@ Internet-Draft            BMP path marking tlv                March 2020
 
 
 
-
-
-
-
-
-
-Cardona, et al.         Expires September 9, 2020               [Page 4]
+Cardona, et al.          Expires January 7, 2021                [Page 3]
 
-Internet-Draft            BMP path marking tlv                March 2020
+Internet-Draft           BMP path status sub-tlv               July 2020
 
 
                     +------------+------------------+
@@ -236,7 +180,7 @@ Internet-Draft            BMP path marking tlv                March 2020
                     | 0x00000008 | Primary          |
                     | 0x00000010 | Backup           |
                     | 0x00000020 | Non-installed    |
-                    | 0x00000040 | Best external    |
+                    | 0x00000040 | Best-external    |
                     | 0x00000080 | Add-Path         |
                     +------------+------------------+
 
@@ -277,16 +221,77 @@ Internet-Draft            BMP path marking tlv                March 2020
 
 
 
-Cardona, et al.         Expires September 9, 2020               [Page 5]
+Cardona, et al.          Expires January 7, 2021                [Page 4]
 
-Internet-Draft            BMP path marking tlv                March 2020
+Internet-Draft           BMP path status sub-tlv               July 2020
 
 
-3.2.  Enterprise-specific Path Status sub-TLV
++-------------+---------------------------------------------------------
+| value       | reason code                                            |
++----------------------------------------------------------------------+
+|[0x00000000] |invalid for unknown,                                    |
+|[0x00000001] |invalid for super network,                              |
+|[0x00000002] |invalid for dampening,                                  |
+|[0x00000003] |invalid for history,                                    |
+|[0x00000004] |invalid for policy deny,                                |
+|[0x00000005] |invalid for ROA not validation,                         |
+|[0x00000006] |invalid for interface error,                            |
+|[0x00000007] |invalid for nexthop route unreachable,                  |
+|[0x00000008] |invalid for nexthop tunnel unreachable,                 |
+|[0x0000000f] |invalid for nexthop restrain,                           |
+|[0x00000010] |invalid for relay BGP LSP,                              |
+|[0x00000014] |invalid for being inactive within VPN instance          |
+|[0x00000015] |invalid for prefix-sid not exist,                       |
+|[0x00000200] |not preferred for peer address,                         |
+|[0x00000300] |not preferred for router ID,                            |
+|[0x00000400] |not preferred for Cluster List,                         |
+|[0x00000500] |not preferred for IGP cost,                             |
+|[0x00000600] |not preferred for peer type,                            |
+|[0x00000700] |not preferred for MED,                                  |
+|[0x00000800] |not preferred for origin,                               |
+|[0x00000900] |not preferred for AS-Path,                              |
+|[0x00000a00] |not preferred for route type,                           |
+|[0x00000b00] |not preferred for Local_Pref,                           |
+|[0x00000c00] |not preferred for PreVal,                               |
+|[0x00000f00] |not preferred for not direct route,                     |
+|[0x00001000] |not preferred for nexthop bit error,                    |
+|[0x00001100] |not preferred for received path-id,                     |
+|[0x00001200] |not preferred for validation,                           |
+|[0x00001300] |not preferred for originate IP,                         |
+|[0x00001500] |not preferred for route distinguisher,                  |
+|[0x00001600] |not preferred for route-select delay,                   |
+|[0x00001700] |not preferred for being imported route,                 |
+|[0x00001800] |not preferred for med-plus-igp,                         |
+|[0x00001c00] |not preferred for AIGP,                                 |
+|[0x00001d00] |not preferred for nexthop-resolved aigp,                |
+|[0x00002000] |not preferred for nexthop unreachable,                  |
+|[0x00002100] |not preferred for nexthop IP,                           |
+|[0x00002300] |not preferred for high-priority,                        |
+|[0x00002400] |not preferred for nexthop-priority,                     |
+|[0x00002500] |not preferred for process ID,                           |
+|[0xFFFFFFFF] |no reason code                                          |
+-----------------------------------------------------------------------+
+
+                Table 2: IANA-Registered Reason Code
+
+
+
+
+Cardona, et al.          Expires January 7, 2021                [Page 5]
+
+Internet-Draft           BMP path status sub-tlv               July 2020
+
+
+2.2.  Enterprise-specific Path Status sub-TLV
+
+   The E-bit [I-D.lucente-grow-bmp-tlv-ebit] mechanism allows the usage
+   of vendor-specific TLVs in addition to IANA-registered one.  In this
+   document, both encoding options for the Path Status sub-TLV are
+   described.
 
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-------------------------------+-------------------------------+
-   |E|       Type (15 bits)        |       Length (2 octets)       |
+   |E|       Type (31 bits)        |       Length (2 octets)       |
    +-------------------------------+-------------------------------+
    |                      PEN number (4 octets)                    |
    +---------------------------------------------------------------+
@@ -295,12 +300,12 @@ Internet-Draft            BMP path marking tlv                March 2020
    |                      Reason Code(variable)                    |
    +---------------------------------------------------------------+
 
-    Figure 3: Enterprise-specific encoding of Path Status sub-TLV
+     Figure 3: Enterprise-specific encoding of Path Status sub-TLV
 
    o  E bit: For an Enterprise-specific sub-TLV, the E bit MUST be set
       to 1.
 
-   o  Type = 1 (15 Bits): indicates that it's the Enterprise-specific
+   o  Type = 1 (31 Bits): indicates that it's the Enterprise-specific
       Path Status sub-TLV.
 
    o  Length (2 Octets): indicates the length of the value field of the
@@ -310,45 +315,43 @@ Internet-Draft            BMP path marking tlv                March 2020
    o  PEN Number (4 octets): indicates the IANA enterprise number IANA-
       PEN.
 
-   o  Path Status (4 Octets): indicates enterprise-specific path status,
-      which remains to be defined.
+   o  Path Status (4 Octets): indicates enterprise-specific path status.
 
    o  Reason Code (Variable): indicates the reasons/explanations of the
-      path status indicated in the Path Type field.  The detailed Reason
-      Code string is to be defined.
+      path status indicated in the Path Type field.
 
-4.  Acknowledgements
+3.  Acknowledgments
 
    We would like to thank Jeff Haas for his valuable comments.
 
-5.  IANA Considerations
+4.  IANA Considerations
 
    This document requests that IANA assign the following new parameters
    to the BMP parameters name space.
 
-   Type = TBD1 (2 Octets): Prefix Information TLV.
-
-   Type = TBD2 (15 Bits): Path Status sub-TLV.
 
 
 
 
-Cardona, et al.         Expires September 9, 2020               [Page 6]
+Cardona, et al.          Expires January 7, 2021                [Page 6]
 
-Internet-Draft            BMP path marking tlv                March 2020
+Internet-Draft           BMP path status sub-tlv               July 2020
 
 
-6.  Security Considerations
+   Type = TBD1 (31 Bits): indicates that it's the IANA-registered Path
+   Status sub-TLV.
+
+5.  Security Considerations
 
    It is not believed that this document adds any additional security
    considerations.
 
-7.  Normative References
+6.  Normative References
 
-   [I-D.ietf-grow-bmp-tlv]
+   [I-D.grow-bmp-tlv]
               Lucente, P., Gu, Y., and H. Smit, "TLV support for BMP
-              Route Monitoring and Peer Down Messages", draft-ietf-grow-
-              bmp-tlv-02 (work in progress), March 2020.
+              Route Monitoring and Peer Down Messages", draft-grow-bmp-
+              tlv-00 (work in progress), September 2019.
 
    [I-D.ietf-idr-best-external]
               Marques, P., Fernando, R., Chen, E., Mohapatra, P., and H.
@@ -381,18 +384,20 @@ Internet-Draft            BMP path marking tlv                March 2020
               DOI 10.17487/RFC4271, January 2006,
               <https://www.rfc-editor.org/info/rfc4271>.
 
+
+
+
+
+
+Cardona, et al.          Expires January 7, 2021                [Page 7]
+
+Internet-Draft           BMP path status sub-tlv               July 2020
+
+
    [RFC7854]  Scudder, J., Ed., Fernando, R., and S. Stuart, "BGP
               Monitoring Protocol (BMP)", RFC 7854,
               DOI 10.17487/RFC7854, June 2016,
               <https://www.rfc-editor.org/info/rfc7854>.
-
-
-
-
-Cardona, et al.         Expires September 9, 2020               [Page 7]
-
-Internet-Draft            BMP path marking tlv                March 2020
-
 
    [RFC7911]  Walton, D., Retana, A., Chen, E., and J. Scudder,
               "Advertisement of Multiple Paths in BGP", RFC 7911,
@@ -405,7 +410,7 @@ Internet-Draft            BMP path marking tlv                March 2020
 
 Authors' Addresses
 
-   Camilo Cardona
+   namilo Cardona
    NTT
    164-168, Carrer de Numancia
    Barcelona  08029
@@ -431,6 +436,20 @@ Authors' Addresses
    Email: Pierre.Francois@insa-lyon.fr
 
 
+
+
+
+
+
+
+
+
+
+Cardona, et al.          Expires January 7, 2021                [Page 8]
+
+Internet-Draft           BMP path status sub-tlv               July 2020
+
+
    Yunan Gu
    Huawei
    Huawei Bld., No.156 Beiqing Rd.
@@ -438,16 +457,6 @@ Authors' Addresses
    China
 
    Email: guyunan@huawei.com
-
-
-
-
-
-
-
-Cardona, et al.         Expires September 9, 2020               [Page 8]
-
-Internet-Draft            BMP path marking tlv                March 2020
 
 
    Thomas Graf
@@ -492,13 +501,4 @@ Internet-Draft            BMP path marking tlv                March 2020
 
 
 
-
-
-
-
-
-
-
-
-
-Cardona, et al.         Expires September 9, 2020               [Page 9]
+Cardona, et al.          Expires January 7, 2021                [Page 9]

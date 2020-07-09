@@ -10,13 +10,13 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-04"
+<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-05"
      ipr="trust200902">
   <front>
-    <title abbrev="BMP path marking tlv">BMP Extension for Path Marking
-    TLV</title>
+    <title abbrev="BMP path status sub-tlv">BMP Extension for Path Status
+    sub-TLV</title>
 
-    <author fullname="Camilo Cardona" initials="C." surname="Cardona">
+    <author fullname="namilo Cardona" initials="C." surname="Cardona">
       <organization>NTT</organization>
 
       <address>
@@ -114,18 +114,15 @@
       </address>
     </author>
 
-    <date day="08" month="March" year="2020"/>
+    <date day="06" month="July" year="2020"/>
 
     <abstract>
       <t>The BGP Monitoring Protocol (BMP) provides an interface for obtaining
       BGP Path information. BGP Path Information is conveyed within BMP Route
       Monitoring (RM) messages. This document proposes an extension to BMP to
-      convey the status of a BGP path after being processed by the BGP
-      best-path selection algorithm. This extension makes use of the TLV
-      mechanims described in <xref
-      target="I-D.ietf-grow-bmp-tlv">draft-ietf-grow-bmp-tlv</xref> and <xref
-      target="I-D.lucente-grow-bmp-tlv-ebit">draft-lucente-grow-bmp-tlv-ebit
-      </xref>.</t>
+      convey the status of a BGP path before and after being processed by the
+      BGP best-path selection algorithm. This extension makes use of the Path
+      Information TLV defined in [draft-cppy-grow-bmp-path-info-tlv].</t>
     </abstract>
 
     <note title="Requirements Language">
@@ -157,81 +154,38 @@
       As a final example, path status information can complement other
       centralized sources of data, for example, flow collectors.</t>
 
-      <t>This document defines a so-called Path Marking TLV to convey the BGP
-      path status information to the BMP server. The BMP Path Marking is
-      defined to be prepended in the BMP Route Monitoring (RM) Message.</t>
-    </section>
-
-    <section title="Prefix Information TLV for the RM Message">
-      <t>As per <xref target="RFC7854">RFC7854</xref>, the BMP RM Message
-      consists of the Common Header, Per-Peer Header, and the BGP Update PDU.
-      According to <xref target="I-D.ietf-grow-bmp-tlv">draft-grow-bmp-tlv</xref> ,
-      optional trailing data in TLV format is allowed in the BMP RM Message to
-      convey characteristics of transported NLRIs (i.e. to help stateless
-      parsing) or vendor-specific data. Such TLV types are to be defined for
-      each application.</t>
-
-      <t>This document defines the Prefix Information TLV to convey
-      descriptional information for route prefixes. The format is shown
-      below.</t>
-
-      <t><figure>
-          <artwork><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
-+-------------------------------+-------------------------------+
-|        Type (2 octets)        |       Length (2 octets)       |
-+---------------------------------------------------------------+
-|        Count (2 octets)       |
-+-------------------------------+-------------------------------+
-|                 Prefix information value(variable)            |
-+---------------------------------------------------------------+
-
-                Figure 1: Prefix Information TLV ]]></artwork>
-        </figure><list style="symbols">
-          <t>Type = TBD1 (2 Octets): Prefix Information TLV.</t>
-
-          <t>Length (2 Octets): indicates the length of the value field of the
-          Prefix Information TLV.</t>
-
-          <t>Count (2 Octets): indicates the number of sub TLVs followed in
-          the Prefix Information Value field.</t>
-
-          <t>Prefix information value (Variable): indicates the value of the
-          Prefix Informtion TLV, which consists of one or multiple sub
-          TLVs.</t>
-        </list></t>
+      <t>This document defines a so-called Path Status sub-TLV to convey the
+      BGP path status to the BMP server. The BMP Path Status sub-TLV is
+      encapsulated within the BMP Path Information TLV carried in the BMP
+      Route Monitoring (RM) Message [draft-cppy-grow-bmp-path-info-tlv].</t>
     </section>
 
     <section title="Path Status sub-TLV">
-      <t>As stated in Appendix F.1 of <xref target="RFC4271">RFC4271</xref>,
-      multiple address prefixes with the same path attributes are allowed to
-      be specified in one message. However, these prefixes may have
-      different path status information. Thus, to indicate the
-      path status for each BGP prefix, we define the Path Status sub-TLV. The
-      order of the Path Status sub-TLVs MUST be in accordance with the prefix
-      order of the Update PDU.</t>
-
-      <t>The <xref target="I-D.lucente-grow-bmp-tlv-ebit">E-bit</xref>
-      mechanism allows the usage of vendor-specific TLVs in addition to
-      IANA-registered one. In this document, both encoding options for the
-      Path Status sub-TLV are described.</t>
+      <t>As stated in [draft-cppy-grow-bmp-path-info-tlv], the order of the
+      sub-TLVs MUST be in accordance with the prefix order encapsulated in the
+      Update PDU. 
+      This document defines two types of Path Status sub-TLVs: one is
+      IANA-registered Path Status sub-TLV, and the other is
+      Enterprise-specific Path Status sub-TLV.</t>
 
       <section title="IANA-registered Path Status sub-TLV">
         <t><figure>
             <artwork align="center"><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-------------------------------+-------------------------------+
-|E|       Type (15 bits)        |       Length (2 octets)       |
+|E|       Type (31 bits)        |       Length (2 octets)       |
 +-------------------------------+-------------------------------+
 |                      Path Status(4 octets)                    |
 +---------------------------------------------------------------+
 |                      Reason Code(4 octets)                    |
 +---------------------------------------------------------------+
 
-    Figure 2:IANA-Registered Encoding of Path Status sub-TLV ]]></artwork>
+    Figure 2:IANA-Registered Encoding of path status sub-TLV ]]></artwork>
           </figure><list style="symbols">
             <t>E bit: For an IANA-registered sub-TLV, the E bit MUST be set to
             0.</t>
 
-            <t>Type = TBD2 (15 Bits): Path Status sub-TLV.</t>
+            <t>Type = TBD2 (31 Bits): indicates that it's the IANA-registered
+            Path Status sub-TLV.</t>
 
             <t>Length (2 Octets): indicates the length of the value field of
             the Path Status TLV. The value field further consists of the
@@ -242,8 +196,8 @@
             path status are defined, as shown in Table 1.</t>
 
             <t>Reason Code (4 Octets): indicates the reasons/explanations of
-            the path status indicated in the Path Type field. The detailed
-            Reason Code bitmap remains to be defined.</t>
+            the path status indicated in the Path Type field. The currently
+            defined reason codes are shown in Table 2.</t>
           </list><figure>
             <artwork align="center"><![CDATA[
 +------------+------------------+
@@ -256,7 +210,7 @@
 | 0x00000008 | Primary          |
 | 0x00000010 | Backup           |
 | 0x00000020 | Non-installed    |
-| 0x00000040 | Best external    |
+| 0x00000040 | Best-external    |
 | 0x00000080 | Add-Path         |
 +------------+------------------+
 
@@ -298,14 +252,66 @@ Table 1: IANA-Registered Path Type ]]></artwork>
             prefix without the new paths implicitly replacing any previous
             ones, the add-path status is applied <xref
             target="RFC7911">RFC7911</xref>.</t>
-          </list></t>
+          </list><figure>
+            <artwork align="center"><![CDATA[
++-------------+---------------------------------------------------------
+| value       | reason code                                            |
++----------------------------------------------------------------------+
+|[0x00000000] |invalid for unknown,                                    |
+|[0x00000001] |invalid for super network,                              |
+|[0x00000002] |invalid for dampening,                                  |
+|[0x00000003] |invalid for history,                                    |
+|[0x00000004] |invalid for policy deny,                                |
+|[0x00000005] |invalid for ROA not validation,                         |
+|[0x00000006] |invalid for interface error,                            |
+|[0x00000007] |invalid for nexthop route unreachable,                  |
+|[0x00000008] |invalid for nexthop tunnel unreachable,                 |
+|[0x0000000f] |invalid for nexthop restrain,                           |
+|[0x00000010] |invalid for relay BGP LSP,                              |
+|[0x00000014] |invalid for being inactive within VPN instance          |
+|[0x00000015] |invalid for prefix-sid not exist,                       |
+|[0x00000200] |not preferred for peer address,                         |
+|[0x00000300] |not preferred for router ID,                            |
+|[0x00000400] |not preferred for Cluster List,                         |
+|[0x00000500] |not preferred for IGP cost,                             |
+|[0x00000600] |not preferred for peer type,                            |
+|[0x00000700] |not preferred for MED,                                  |
+|[0x00000800] |not preferred for origin,                               |
+|[0x00000900] |not preferred for AS-Path,                              |
+|[0x00000a00] |not preferred for route type,                           |
+|[0x00000b00] |not preferred for Local_Pref,                           |
+|[0x00000c00] |not preferred for PreVal,                               |
+|[0x00000f00] |not preferred for not direct route,                     |
+|[0x00001000] |not preferred for nexthop bit error,                    |
+|[0x00001100] |not preferred for received path-id,                     |
+|[0x00001200] |not preferred for validation,                           |
+|[0x00001300] |not preferred for originate IP,                         |
+|[0x00001500] |not preferred for route distinguisher,                  |
+|[0x00001600] |not preferred for route-select delay,                   |
+|[0x00001700] |not preferred for being imported route,                 |
+|[0x00001800] |not preferred for med-plus-igp,                         |
+|[0x00001c00] |not preferred for AIGP,                                 |
+|[0x00001d00] |not preferred for nexthop-resolved aigp,                |
+|[0x00002000] |not preferred for nexthop unreachable,                  |
+|[0x00002100] |not preferred for nexthop IP,                           |
+|[0x00002300] |not preferred for high-priority,                        |
+|[0x00002400] |not preferred for nexthop-priority,                     |
+|[0x00002500] |not preferred for process ID,                           |
+|[0xFFFFFFFF] |no reason code                                          |
+-----------------------------------------------------------------------+
+
+                Table 2: IANA-Registered Reason Code ]]></artwork>
+          </figure></t>
       </section>
 
       <section title="Enterprise-specific Path Status sub-TLV">
-        <t><figure>
+        <t>The <xref target="I-D.lucente-grow-bmp-tlv-ebit">E-bit</xref>
+        mechanism allows the usage of vendor-specific TLVs in addition to
+        IANA-registered one. In this document, both encoding options for the
+        Path Status sub-TLV are described.<figure>
             <artwork><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-------------------------------+-------------------------------+
-|E|       Type (15 bits)        |       Length (2 octets)       |
+|E|       Type (31 bits)        |       Length (2 octets)       |
 +-------------------------------+-------------------------------+
 |                      PEN number (4 octets)                    |
 +---------------------------------------------------------------+
@@ -314,12 +320,12 @@ Table 1: IANA-Registered Path Type ]]></artwork>
 |                      Reason Code(variable)                    |
 +---------------------------------------------------------------+
 
- Figure 3: Enterprise-specific encoding of Path Status sub-TLV]]></artwork>
+  Figure 3: Enterprise-specific encoding of Path Status sub-TLV]]></artwork>
           </figure><list style="symbols">
             <t>E bit: For an Enterprise-specific sub-TLV, the E bit MUST be
             set to 1.</t>
 
-            <t>Type = 1 (15 Bits): indicates that it's the Enterprise-specific
+            <t>Type = 1 (31 Bits): indicates that it's the Enterprise-specific
             Path Status sub-TLV.</t>
 
             <t>Length (2 Octets): indicates the length of the value field of
@@ -330,16 +336,15 @@ Table 1: IANA-Registered Path Type ]]></artwork>
             IANA-PEN.</t>
 
             <t>Path Status (4 Octets): indicates enterprise-specific path
-            status, which remains to be defined.</t>
+            status.</t>
 
             <t>Reason Code (Variable): indicates the reasons/explanations of
-            the path status indicated in the Path Type field. The detailed
-            Reason Code string is to be defined.</t>
+            the path status indicated in the Path Type field.</t>
           </list></t>
       </section>
     </section>
 
-    <section title="Acknowledgements">
+    <section title="Acknowledgments">
       <t>We would like to thank Jeff Haas for his valuable comments.</t>
     </section>
 
@@ -347,9 +352,8 @@ Table 1: IANA-Registered Path Type ]]></artwork>
       <t>This document requests that IANA assign the following new parameters
       to the BMP parameters name space.</t>
 
-      <t>Type = TBD1 (2 Octets): Prefix Information TLV.</t>
-
-      <t>Type = TBD2 (15 Bits): Path Status sub-TLV.</t>
+      <t>Type = TBD1 (31 Bits): indicates that it's the IANA-registered Path
+      Status sub-TLV.</t>
     </section>
 
     <section anchor="Security" title="Security Considerations">
@@ -370,15 +374,15 @@ Table 1: IANA-Registered Path Type ]]></artwork>
 
       <?rfc include='reference.I-D.ietf-idr-best-external'?>
 
-      <?rfc include='reference.I-D.ietf-grow-bmp-tlv'?>
-
-      <?rfc include='reference.I-D.lucente-grow-bmp-tlv-ebit'?>
+      <?rfc include='reference.I-D.grow-bmp-tlv'?>
 
       <?rfc include='reference.I-D.ietf-rtgwg-bgp-pic'?>
 
       <?rfc include='reference.I-D.lapukhov-bgp-ecmp-considerations'?>
 
       <?rfc include='reference.RFC.7911'?>
+
+      <?rfc include='reference.I-D.lucente-grow-bmp-tlv-ebit'?>
     </references>
   </back>
 </rfc>
