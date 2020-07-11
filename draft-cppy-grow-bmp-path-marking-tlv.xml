@@ -16,7 +16,7 @@
     <title abbrev="BMP path status sub-tlv">BMP Extension for Path Status
     sub-TLV</title>
 
-    <author fullname="namilo Cardona" initials="C." surname="Cardona">
+    <author fullname="Camilo Cardona" initials="C." surname="Cardona">
       <organization>NTT</organization>
 
       <address>
@@ -114,7 +114,7 @@
       </address>
     </author>
 
-    <date day="06" month="July" year="2020"/>
+    <date day="12" month="July" year="2020"/>
 
     <abstract>
       <t>The BGP Monitoring Protocol (BMP) provides an interface for obtaining
@@ -172,19 +172,19 @@
         <t><figure>
             <artwork align="center"><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-------------------------------+-------------------------------+
-|E|       Type (31 bits)        |       Length (2 octets)       |
+|E|       Type (15 bits)        |       Length (2 octets)       |
 +-------------------------------+-------------------------------+
 |                      Path Status(4 octets)                    |
 +---------------------------------------------------------------+
 |                      Reason Code(4 octets)                    |
 +---------------------------------------------------------------+
 
-    Figure 2:IANA-Registered Encoding of path status sub-TLV ]]></artwork>
+    Figure 2:IANA-Registered Encoding of the path status sub-TLV ]]></artwork>
           </figure><list style="symbols">
             <t>E bit: For an IANA-registered sub-TLV, the E bit MUST be set to
             0.</t>
 
-            <t>Type = TBD2 (31 Bits): indicates that it's the IANA-registered
+            <t>Type = TBD2 (15 Bits): indicates that it is the IANA-registered
             Path Status sub-TLV.</t>
 
             <t>Length (2 Octets): indicates the length of the value field of
@@ -311,7 +311,7 @@ Table 1: IANA-Registered Path Type ]]></artwork>
         Path Status sub-TLV are described.<figure>
             <artwork><![CDATA[ 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
 +-------------------------------+-------------------------------+
-|E|       Type (31 bits)        |       Length (2 octets)       |
+|E|       Type (15 bits)        |       Length (2 octets)       |
 +-------------------------------+-------------------------------+
 |                      PEN number (4 octets)                    |
 +---------------------------------------------------------------+
@@ -320,12 +320,12 @@ Table 1: IANA-Registered Path Type ]]></artwork>
 |                      Reason Code(variable)                    |
 +---------------------------------------------------------------+
 
-  Figure 3: Enterprise-specific encoding of Path Status sub-TLV]]></artwork>
+ Figure 3: Enterprise-specific encoding of Path Status sub-TLV]]></artwork>
           </figure><list style="symbols">
             <t>E bit: For an Enterprise-specific sub-TLV, the E bit MUST be
             set to 1.</t>
 
-            <t>Type = 1 (31 Bits): indicates that it's the Enterprise-specific
+            <t>Type = 1 (15 Bits): indicates that it's the Enterprise-specific
             Path Status sub-TLV.</t>
 
             <t>Length (2 Octets): indicates the length of the value field of
@@ -335,7 +335,7 @@ Table 1: IANA-Registered Path Type ]]></artwork>
             <t>PEN Number (4 octets): indicates the IANA enterprise number
             IANA-PEN.</t>
 
-            <t>Path Status (4 Octets): indicates enterprise-specific path
+            <t>Path Status (4 Octets): indicates the enterprise-specific path
             status.</t>
 
             <t>Reason Code (Variable): indicates the reasons/explanations of
@@ -352,7 +352,7 @@ Table 1: IANA-Registered Path Type ]]></artwork>
       <t>This document requests that IANA assign the following new parameters
       to the BMP parameters name space.</t>
 
-      <t>Type = TBD1 (31 Bits): indicates that it's the IANA-registered Path
+      <t>Type = TBD1 (15 Bits): indicates that it is the IANA-registered Path
       Status sub-TLV.</t>
     </section>
 
