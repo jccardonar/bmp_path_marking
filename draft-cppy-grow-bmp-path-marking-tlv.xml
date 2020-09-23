@@ -218,7 +218,7 @@
 | 0x00000010 | Backup           |
 | 0x00000020 | Non-installed    |
 | 0x00000040 | Best-external    |
-| 0x00000080 | Add+Path         |
+| 0x00000080 | Add-Path         |
 +------------+------------------+
 
 Table 1: IANA-Registered Path Type ]]></artwork>
