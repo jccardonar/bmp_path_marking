@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-07"
+<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-08"
      ipr="trust200902">
   <front>
     <title abbrev="BMP path status tlv">BMP Extension for Path Status
@@ -114,7 +114,7 @@
       </address>
     </author>
 
-    <date day="26" month="October" year="2020"/>
+    <date day="20" month="April" year="2021"/>
 
     <abstract>
       <t>The BGP Monitoring Protocol (BMP) provides an interface for obtaining
@@ -345,6 +345,14 @@ Table 1: IANA-Registered Path Type ]]></artwork>
             to be determined w.r.t. each PEN number.</t>
           </list></t>
       </section>
+    </section>
+
+    <section title="Operational considerations">
+      <t>The path status TLV does not force implementations to store any paths.
+          It  provides a method to mark the available paths with the their
+          status. Operators should select which paths to store based on the
+          applications they want to support and the available device
+          resources.</t>
     </section>
 
     <section title="Acknowledgments">
