@@ -260,6 +260,11 @@ Table 1: IANA-Registered Path Type ]]></artwork>
             ones, the add-path status is applied <xref
             target="RFC7911">RFC7911</xref>.</t>
           </list><figure>
+
+          <t>The path status TLV does not force a BMP client to send any
+              of these paths. It just provides a method to mark the paths that
+              are available with their status.</t>
+
             <artwork align="center"><![CDATA[+----------+-----------------------------------------------------+
 |   Value  | Reason code                                         |
 +----------------------------------------------------------------+
@@ -345,14 +350,6 @@ Table 1: IANA-Registered Path Type ]]></artwork>
             to be determined w.r.t. each PEN number.</t>
           </list></t>
       </section>
-    </section>
-
-    <section title="Operational considerations">
-      <t>The path status TLV does not force implementations to store any paths.
-          It  provides a method to mark the available paths with the their
-          status. Operators should select which paths to store based on the
-          applications they want to support and the available device
-          resources.</t>
     </section>
 
     <section title="Acknowledgments">
