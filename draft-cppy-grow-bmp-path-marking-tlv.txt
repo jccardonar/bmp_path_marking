@@ -5,17 +5,17 @@
 Network Working Group                                         C. Cardona
 Internet-Draft                                                P. Lucente
 Intended status: Standards Track                                     NTT
-Expires: April 29, 2021                                      P. Francois
+Expires: October 22, 2021                                    P. Francois
                                                                INSA-Lyon
                                                                    Y. Gu
                                                                   Huawei
                                                                  T. Graf
                                                                 Swisscom
-                                                        October 26, 2020
+                                                          April 20, 2021
 
 
                    BMP Extension for Path Status TLV
-                draft-cppy-grow-bmp-path-marking-tlv-07
+                draft-cppy-grow-bmp-path-marking-tlv-08
 
 Abstract
 
@@ -53,16 +53,16 @@ Status of This Memo
 
 
 
-Cardona, et al.          Expires April 29, 2021                 [Page 1]
+Cardona, et al.         Expires October 22, 2021                [Page 1]
 
-Internet-Draft             BMP path status tlv              October 2020
+Internet-Draft             BMP path status tlv                April 2021
 
 
-   This Internet-Draft will expire on April 29, 2021.
+   This Internet-Draft will expire on October 22, 2021.
 
 Copyright Notice
 
-   Copyright (c) 2020 IETF Trust and the persons identified as the
+   Copyright (c) 2021 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -80,9 +80,9 @@ Table of Contents
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Path Status TLV . . . . . . . . . . . . . . . . . . . . . . .   3
      2.1.  IANA-registered Path Status TLV . . . . . . . . . . . . .   3
-     2.2.  Enterprise-specific Path Status TLV . . . . . . . . . . .   5
+     2.2.  Enterprise-specific Path Status TLV . . . . . . . . . . .   6
    3.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .   6
-   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
+   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
    5.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
    6.  Normative References  . . . . . . . . . . . . . . . . . . . .   7
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Cardona, et al.          Expires April 29, 2021                 [Page 2]
+Cardona, et al.         Expires October 22, 2021                [Page 2]
 
-Internet-Draft             BMP path status tlv              October 2020
+Internet-Draft             BMP path status tlv                April 2021
 
 
    This document defines a so-called Path Status TLV to convey the BGP
@@ -165,9 +165,9 @@ Internet-Draft             BMP path status tlv              October 2020
 
 
 
-Cardona, et al.          Expires April 29, 2021                 [Page 3]
+Cardona, et al.         Expires October 22, 2021                [Page 3]
 
-Internet-Draft             BMP path status tlv              October 2020
+Internet-Draft             BMP path status tlv                April 2021
 
 
                     +------------+------------------+
@@ -221,10 +221,14 @@ Internet-Draft             BMP path status tlv              October 2020
 
 
 
-Cardona, et al.          Expires April 29, 2021                 [Page 4]
+Cardona, et al.         Expires October 22, 2021                [Page 4]
 
-Internet-Draft             BMP path status tlv              October 2020
+Internet-Draft             BMP path status tlv                April 2021
 
+
+   The path status TLV does not force a BMP client to send any of these
+   paths.  It just provides a method to mark the paths that are
+   available with their status.
 
     +----------+-----------------------------------------------------+
     |   Value  | Reason code                                         |
@@ -267,20 +271,18 @@ Internet-Draft             BMP path status tlv              October 2020
 
                    Table 2: IANA-Registered Reason Code
 
-2.2.  Enterprise-specific Path Status TLV
 
 
 
 
 
 
-
-
-
-Cardona, et al.          Expires April 29, 2021                 [Page 5]
+Cardona, et al.         Expires October 22, 2021                [Page 5]
 
-Internet-Draft             BMP path status tlv              October 2020
+Internet-Draft             BMP path status tlv                April 2021
 
+
+2.2.  Enterprise-specific Path Status TLV
 
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
    +-------------------------------+-------------------------------+
@@ -324,19 +326,22 @@ Internet-Draft             BMP path status tlv              October 2020
 
    We would like to thank Jeff Haas for his valuable comments.
 
+
+
+
+
+
+
+
+Cardona, et al.         Expires October 22, 2021                [Page 6]
+
+Internet-Draft             BMP path status tlv                April 2021
+
+
 4.  IANA Considerations
 
    This document requests that IANA assign the following new parameters
    to the BMP parameters name space.
-
-
-
-
-
-Cardona, et al.          Expires April 29, 2021                 [Page 6]
-
-Internet-Draft             BMP path status tlv              October 2020
-
 
    Type = TBD1 (15 Bits): indicates that it is the IANA-registered Path
    Status TLV.
@@ -351,7 +356,7 @@ Internet-Draft             BMP path status tlv              October 2020
    [I-D.ietf-grow-bmp-tlv]
               Lucente, P., Gu, Y., and H. Smit, "TLV support for BMP
               Route Monitoring and Peer Down Messages", draft-ietf-grow-
-              bmp-tlv-03 (work in progress), September 2020.
+              bmp-tlv-04 (work in progress), November 2020.
 
    [I-D.ietf-idr-best-external]
               Marques, P., Fernando, R., Chen, E., Mohapatra, P., and H.
@@ -367,7 +372,7 @@ Internet-Draft             BMP path status tlv              October 2020
    [I-D.lapukhov-bgp-ecmp-considerations]
               Lapukhov, P. and J. Tantsura, "Equal-Cost Multipath
               Considerations for BGP", draft-lapukhov-bgp-ecmp-
-              considerations-04 (work in progress), May 2020.
+              considerations-05 (work in progress), November 2020.
 
    [I-D.lucente-grow-bmp-tlv-ebit]
               Lucente, P. and Y. Gu, "Support for Enterprise-specific
@@ -379,20 +384,20 @@ Internet-Draft             BMP path status tlv              October 2020
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
 
+
+
+
+
+
+Cardona, et al.         Expires October 22, 2021                [Page 7]
+
+Internet-Draft             BMP path status tlv                April 2021
+
+
    [RFC4271]  Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., "A
               Border Gateway Protocol 4 (BGP-4)", RFC 4271,
               DOI 10.17487/RFC4271, January 2006,
               <https://www.rfc-editor.org/info/rfc4271>.
-
-
-
-
-
-
-Cardona, et al.          Expires April 29, 2021                 [Page 7]
-
-Internet-Draft             BMP path status tlv              October 2020
-
 
    [RFC7854]  Scudder, J., Ed., Fernando, R., and S. Stuart, "BGP
               Monitoring Protocol (BMP)", RFC 7854,
@@ -440,14 +445,9 @@ Authors' Addresses
 
 
 
-
-
-
-
-
-Cardona, et al.          Expires April 29, 2021                 [Page 8]
+Cardona, et al.         Expires October 22, 2021                [Page 8]
 
-Internet-Draft             BMP path status tlv              October 2020
+Internet-Draft             BMP path status tlv                April 2021
 
 
    Yunan Gu
@@ -501,4 +501,4 @@ Internet-Draft             BMP path status tlv              October 2020
 
 
 
-Cardona, et al.          Expires April 29, 2021                 [Page 9]
+Cardona, et al.         Expires October 22, 2021                [Page 9]
