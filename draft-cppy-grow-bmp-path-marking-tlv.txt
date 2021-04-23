@@ -81,11 +81,10 @@ Table of Contents
    2.  Path Status TLV . . . . . . . . . . . . . . . . . . . . . . .   3
      2.1.  IANA-registered Path Status TLV . . . . . . . . . . . . .   3
      2.2.  Enterprise-specific Path Status TLV . . . . . . . . . . .   6
-   3.  Operational considerations  . . . . . . . . . . . . . . . . .   6
-   4.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .   7
-   5.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
-   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
-   7.  Normative References  . . . . . . . . . . . . . . . . . . . .   7
+   3.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .   6
+   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
+   6.  Normative References  . . . . . . . . . . . . . . . . . . . .   7
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
 
 1.  Introduction
@@ -105,7 +104,8 @@ Table of Contents
    and also use the status as a validation source (since it can compare
    the calculated state to the actual outcome of the network, such as
    primary and backup path).  As a final example, path status
-
+   information can complement other centralized sources of data, for
+   example, flow collectors.
 
 
 
@@ -113,9 +113,6 @@ Cardona, et al.         Expires October 22, 2021                [Page 2]
 
 Internet-Draft             BMP path status tlv                April 2021
 
-
-   information can complement other centralized sources of data, for
-   example, flow collectors.
 
    This document defines a so-called Path Status TLV to convey the BGP
    path status to the BMP server.  The BMP Path Status TLV is carried in
@@ -162,6 +159,9 @@ Internet-Draft             BMP path status tlv                April 2021
 
    o  Reason Code (2 Octets, optional): indicates the reason of the path
       status indicated in the Path Status field.  The reason code field
+      is optional.  If no reason code is carried, this field is empty.
+      If a reason code is carried, the reason code is indicated by a
+      2-byte value, which is defined in Table 2.
 
 
 
@@ -169,10 +169,6 @@ Cardona, et al.         Expires October 22, 2021                [Page 3]
 
 Internet-Draft             BMP path status tlv                April 2021
 
-
-      is optional.  If no reason code is carried, this field is empty.
-      If a reason code is carried, the reason code is indicated by a
-      2-byte value, which is defined in Table 2.
 
                     +------------+------------------+
                     | Value      | Path type        |
@@ -218,6 +214,10 @@ Internet-Draft             BMP path status tlv                April 2021
    o  A non-installed path refers to the route that is not installed
       into the IP routing table.
 
+   o  For the advertisement of multiple paths for the same address
+      prefix without the new paths implicitly replacing any previous
+      ones, the add-path status is applied RFC7911 [RFC7911].
+
 
 
 
@@ -226,9 +226,9 @@ Cardona, et al.         Expires October 22, 2021                [Page 4]
 Internet-Draft             BMP path status tlv                April 2021
 
 
-   o  For the advertisement of multiple paths for the same address
-      prefix without the new paths implicitly replacing any previous
-      ones, the add-path status is applied RFC7911 [RFC7911].
+   The path status TLV does not force a BMP client to send any of these
+   paths.  It just provides a method to mark the paths that are
+   available with their status.
 
     +----------+-----------------------------------------------------+
     |   Value  | Reason code                                         |
@@ -322,13 +322,13 @@ Internet-Draft             BMP path status tlv                April 2021
       explanations of the path status indicated in the Path Status
       field.  The format is to be determined w.r.t. each PEN number.
 
-3.  Operational considerations
+3.  Acknowledgments
 
-   The path status TLV does not force implementations to store any
-   paths.  It provides a method to mark the available paths with the
-   their status.  Operators should select which paths to store based on
-   the applications they want to support and the available device
-   resources.
+   We would like to thank Jeff Haas for his valuable comments.
+
+
+
+
 
 
 
@@ -338,11 +338,7 @@ Cardona, et al.         Expires October 22, 2021                [Page 6]
 Internet-Draft             BMP path status tlv                April 2021
 
 
-4.  Acknowledgments
-
-   We would like to thank Jeff Haas for his valuable comments.
-
-5.  IANA Considerations
+4.  IANA Considerations
 
    This document requests that IANA assign the following new parameters
    to the BMP parameters name space.
@@ -350,12 +346,12 @@ Internet-Draft             BMP path status tlv                April 2021
    Type = TBD1 (15 Bits): indicates that it is the IANA-registered Path
    Status TLV.
 
-6.  Security Considerations
+5.  Security Considerations
 
    It is not believed that this document adds any additional security
    considerations.
 
-7.  Normative References
+6.  Normative References
 
    [I-D.ietf-grow-bmp-tlv]
               Lucente, P., Gu, Y., and H. Smit, "TLV support for BMP
@@ -383,6 +379,10 @@ Internet-Draft             BMP path status tlv                April 2021
               TLVs in the BGP Monitoring Protocol", draft-lucente-grow-
               bmp-tlv-ebit-01 (work in progress), May 2020.
 
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/info/rfc2119>.
 
 
 
@@ -393,11 +393,6 @@ Cardona, et al.         Expires October 22, 2021                [Page 7]
 
 Internet-Draft             BMP path status tlv                April 2021
 
-
-   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
-              Requirement Levels", BCP 14, RFC 2119,
-              DOI 10.17487/RFC2119, March 1997,
-              <https://www.rfc-editor.org/info/rfc2119>.
 
    [RFC4271]  Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., "A
               Border Gateway Protocol 4 (BGP-4)", RFC 4271,
@@ -438,7 +433,12 @@ Authors' Addresses
    Email: paolo@ntt.net
 
 
+   Pierre Francois
+   INSA-Lyon
+   Lyon
+   France
 
+   Email: Pierre.Francois@insa-lyon.fr
 
 
 
@@ -448,14 +448,6 @@ Authors' Addresses
 Cardona, et al.         Expires October 22, 2021                [Page 8]
 
 Internet-Draft             BMP path status tlv                April 2021
-
-
-   Pierre Francois
-   INSA-Lyon
-   Lyon
-   France
-
-   Email: Pierre.Francois@insa-lyon.fr
 
 
    Yunan Gu
@@ -474,6 +466,14 @@ Internet-Draft             BMP path status tlv                April 2021
    Switzerland
 
    Email: thomas.graf@swisscom.com
+
+
+
+
+
+
+
+
 
 
 

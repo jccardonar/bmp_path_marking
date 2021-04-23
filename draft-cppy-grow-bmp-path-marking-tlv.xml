@@ -259,12 +259,13 @@ Table 1: IANA-Registered Path Type ]]></artwork>
             prefix without the new paths implicitly replacing any previous
             ones, the add-path status is applied <xref
             target="RFC7911">RFC7911</xref>.</t>
-          </list><figure>
+          </list>
 
-          <t>The path status TLV does not force a BMP client to send any
+          The path status TLV does not force a BMP client to send any
               of these paths. It just provides a method to mark the paths that
-              are available with their status.</t>
+              are available with their status.
 
+<figure>
             <artwork align="center"><![CDATA[+----------+-----------------------------------------------------+
 |   Value  | Reason code                                         |
 +----------------------------------------------------------------+
