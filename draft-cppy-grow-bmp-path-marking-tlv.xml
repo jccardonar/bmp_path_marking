@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-08"
+<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-10"
      ipr="trust200902">
   <front>
     <title abbrev="BMP path status tlv">BMP Extension for Path Status
@@ -114,7 +114,7 @@
       </address>
     </author>
 
-    <date day="20" month="April" year="2021"/>
+    <date day="10" month="May" year="2022"/>
 
     <abstract>
       <t>The BGP Monitoring Protocol (BMP) provides an interface for obtaining
