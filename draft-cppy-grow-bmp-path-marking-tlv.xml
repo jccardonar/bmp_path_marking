@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-10"
+<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-11"
      ipr="trust200902">
   <front>
     <title abbrev="BMP path status tlv">BMP Extension for Path Status
@@ -120,9 +120,8 @@
       <t>The BGP Monitoring Protocol (BMP) provides an interface for obtaining
       BGP Path information. BGP Path Information is conveyed within BMP Route
       Monitoring (RM) messages. This document proposes an extension to BMP to
-      convey the status of a BGP path before and after being processed by the
-      BGP best-path selection algorithm. This extension makes use of the TLV
-      mechanims described in <xref
+      convey the status of a path after being processed by the BGP process. 
+      This extension makes use of the TLV mechanims described in <xref
       target="I-D.ietf-grow-bmp-tlv">draft-ietf-grow-bmp-tlv</xref> and <xref
       target="I-D.lucente-grow-bmp-tlv-ebit">draft-lucente-grow-bmp-tlv-ebit</xref>.
       </t>
@@ -141,8 +140,8 @@
   <middle>
     <section title="Introduction">
       <t>For a given prefix, multiple paths with different path status, e.g.,
-      the "best-path", "back-up path" and so on, may co-exist in the BGP RIB
-      after being processed by the local policy and the BGP decision process.
+      the "best-path", "back-up path", "invalid", and so on, may co-exist in
+      the BGP RIBs after being processed by the BGP decision process.
       The path status information is currently not carried in the BGP Update
       Message <xref target="RFC4271">RFC4271</xref> or in the BMP Update
       Message <xref target="RFC7854">RFC7854</xref>.</t>
@@ -198,7 +197,7 @@
             prefix in the BGP Update PDU.</t>
 
             <t>Path Status (4 Octets): indicates the path status of the BGP
-            Update PDU encapsulated in the RM Message. Currently 8 types of
+            Update PDU encapsulated in the RM Message. Currently 10 types of
             path status are defined, as shown in Table 1. All zeros are
             reserved.</t>
 
@@ -208,18 +207,20 @@
             is empty. If a reason code is carried, the reason code is
             indicated by a 2-byte value, which is defined in Table 2.</t>
           </list><figure>
-            <artwork align="center"><![CDATA[+------------+------------------+
-| Value      | Path type        |
-+-------------------------------+
-| 0x00000001 | Invalid          |
-| 0x00000002 | Best             |
-| 0x00000004 | Non-selected     |
-| 0x00000008 | Primary          |
-| 0x00000010 | Backup           |
-| 0x00000020 | Non-installed    |
-| 0x00000040 | Best-external    |
-| 0x00000080 | Add-Path         |
-+------------+------------------+
+            <artwork align="center"><![CDATA[+------------+-----------------------------+
+| Value      | Path type                   |
++------------------------------------------+
+| 0x00000001 | Invalid                     |
+| 0x00000002 | Best                        |
+| 0x00000004 | Non-selected                |
+| 0x00000008 | Primary                     |
+| 0x00000016 | Backup                      |
+| 0x00000032 | Non-installed               |
+| 0x00000064 | Best-external               |
+| 0x00000128 | Add-Path                    |
+| 0x00000256 | Rejected in outbound policy |
+| 0x00000512 | Rejected in inbound policy  |
++------------+-----------------------------+
 
 Table 1: IANA-Registered Path Type ]]></artwork>
           </figure>The Path Status field contains a bitmap where each bit
@@ -259,6 +260,7 @@ Table 1: IANA-Registered Path Type ]]></artwork>
             prefix without the new paths implicitly replacing any previous
             ones, the add-path status is applied <xref
             target="RFC7911">RFC7911</xref>.</t>
+
           </list>
 
           The path status TLV does not force a BMP client to send any
@@ -272,7 +274,6 @@ Table 1: IANA-Registered Path Type ]]></artwork>
 | [0x0001] | invalid for super network                           |
 | [0x0002] | invalid for dampening                               |
 | [0x0003] | invalid for damping history                         |
-| [0x0004] | invalid for policy deny                             |
 | [0x0005] | invalid for ROV not valid                           |
 | [0x0006] | invalid for interface error                         |
 | [0x0007] | invalid for nexthop route unreachable               |
