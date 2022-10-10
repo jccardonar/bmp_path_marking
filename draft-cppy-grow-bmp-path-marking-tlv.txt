@@ -228,7 +228,7 @@ Internet-Draft             BMP path status tlv                  Oct 2022
 
    o  For the advertisement of multiple paths for the same address
       prefix without the new paths implicitly replacing any previous
-      ones, the add-path status is applied RFC7911 [RFC7911].
+      ones, the add-path status is applied [RFC7911].
 
    The path status TLV does not force a BMP client to send any of these
    paths.  It just provides a method to mark the paths that are
