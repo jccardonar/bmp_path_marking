@@ -173,6 +173,7 @@ Internet-Draft             BMP path status tlv                  Oct 2022
                +------------+-----------------------------+
                | Value      | Path type                   |
                +------------------------------------------+
+               | 0x00000000 | Reserved                    |
                | 0x00000001 | Invalid                     |
                | 0x00000002 | Best                        |
                | 0x00000004 | Non-selected                |
@@ -181,8 +182,8 @@ Internet-Draft             BMP path status tlv                  Oct 2022
                | 0x00000020 | Non-installed               |
                | 0x00000040 | Best-external               |
                | 0x00000080 | Add-Path                    |
-               | 0x00000100 | Rejected in outbound policy |
-               | 0x00000200 | Rejected in inbound policy  |
+               | 0x00000100 | Filtered in outbound policy |
+               | 0x00000200 | Filtered in inbound policy  |
                | 0x00000400 | Invalid ROV                 |
                +------------+-----------------------------+
 
@@ -216,7 +217,6 @@ Internet-Draft             BMP path status tlv                  Oct 2022
 
    o  A non-installed path refers to the route that is not installed
       into the IP routing table.
-
 
 
 
@@ -356,9 +356,9 @@ Internet-Draft             BMP path status tlv                  Oct 2022
    [I-D.ietf-grow-bmp-tlv]
               Lucente, P. and Y. Gu, "TLV support for BMP Route
               Monitoring and Peer Down Messages", draft-ietf-grow-bmp-
-              tlv-07 (work in progress), March 2022,
-              <https://www.ietf.org/archive/id/draft-ietf-grow-bmp-tlv-
-              07.txt>.
+              tlv-08 (work in progress), October 2022,
+              <https://datatracker.ietf.org/api/v1/doc/document/draft-
+              ietf-grow-bmp-tlv/>.
 
    [I-D.ietf-idr-best-external]
               Marques, P., Fernando, R., Chen, E., Mohapatra, P., and H.

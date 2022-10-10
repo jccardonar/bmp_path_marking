@@ -210,6 +210,7 @@
             <artwork align="center"><![CDATA[+------------+-----------------------------+
 | Value      | Path type                   |
 +------------------------------------------+
+| 0x00000000 | Reserved                    |
 | 0x00000001 | Invalid                     |
 | 0x00000002 | Best                        |
 | 0x00000004 | Non-selected                |
@@ -218,8 +219,8 @@
 | 0x00000020 | Non-installed               |
 | 0x00000040 | Best-external               |
 | 0x00000080 | Add-Path                    |
-| 0x00000100 | Rejected in outbound policy |
-| 0x00000200 | Rejected in inbound policy  |
+| 0x00000100 | Filtered in outbound policy |
+| 0x00000200 | Filtered in inbound policy  |
 | 0x00000400 | Invalid ROV                 |
 +------------+-----------------------------+
 
