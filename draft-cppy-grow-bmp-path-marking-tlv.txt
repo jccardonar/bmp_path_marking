@@ -5,28 +5,27 @@
 Network Working Group                                         C. Cardona
 Internet-Draft                                                P. Lucente
 Intended status: Standards Track                                     NTT
-Expires: October 22, 2021                                    P. Francois
+Expires: April 22, 2023                                      P. Francois
                                                                INSA-Lyon
                                                                    Y. Gu
                                                                   Huawei
                                                                  T. Graf
                                                                 Swisscom
-                                                          April 20, 2021
+                                                            Oct 19, 2022
 
 
                    BMP Extension for Path Status TLV
-                draft-cppy-grow-bmp-path-marking-tlv-08
+                draft-cppy-grow-bmp-path-marking-tlv-11
 
 Abstract
 
    The BGP Monitoring Protocol (BMP) provides an interface for obtaining
    BGP Path information.  BGP Path Information is conveyed within BMP
    Route Monitoring (RM) messages.  This document proposes an extension
-   to BMP to convey the status of a BGP path before and after being
-   processed by the BGP best-path selection algorithm.  This extension
-   makes use of the TLV mechanims described in draft-ietf-grow-bmp-tlv
-   [I-D.ietf-grow-bmp-tlv] and draft-lucente-grow-bmp-tlv-ebit
-   [I-D.lucente-grow-bmp-tlv-ebit].
+   to BMP to convey the status of a path after being processed by the
+   BGP process.  This extension makes use of the TLV mechanims described
+   in draft-ietf-grow-bmp-tlv [I-D.ietf-grow-bmp-tlv] and draft-ietf-
+   grow-bmp-tlv-ebit [I-D.ietf-grow-bmp-tlv-ebit].
 
 Requirements Language
 
@@ -53,16 +52,17 @@ Status of This Memo
 
 
 
-Cardona, et al.         Expires October 22, 2021                [Page 1]
+
+Cardona, et al.          Expires April 22, 2023                 [Page 1]
 
-Internet-Draft             BMP path status tlv                April 2021
+Internet-Draft             BMP path status tlv                  Oct 2022
 
 
-   This Internet-Draft will expire on October 22, 2021.
+   This Internet-Draft will expire on April 22, 2023.
 
 Copyright Notice
 
-   Copyright (c) 2021 IETF Trust and the persons identified as the
+   Copyright (c) 2022 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -90,11 +90,11 @@ Table of Contents
 1.  Introduction
 
    For a given prefix, multiple paths with different path status, e.g.,
-   the "best-path", "back-up path" and so on, may co-exist in the BGP
-   RIB after being processed by the local policy and the BGP decision
-   process.  The path status information is currently not carried in the
-   BGP Update Message RFC4271 [RFC4271] or in the BMP Update Message
-   RFC7854 [RFC7854].
+   the "best-path", "back-up path", "invalid", and so on, may co-exist
+   in the BGP RIBs after being processed by the BGP decision process.
+   The path status information is currently not carried in the BGP
+   Update Message RFC4271 [RFC4271] or in the BMP Update Message RFC7854
+   [RFC7854].
 
    External systems can use the path status for various applications.
    The path status is commonly checked by operators when performing
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Cardona, et al.         Expires October 22, 2021                [Page 2]
+Cardona, et al.          Expires April 22, 2023                 [Page 2]
 
-Internet-Draft             BMP path status tlv                April 2021
+Internet-Draft             BMP path status tlv                  Oct 2022
 
 
    This document defines a so-called Path Status TLV to convey the BGP
@@ -153,7 +153,7 @@ Internet-Draft             BMP path status tlv                April 2021
       0, of the prefix in the BGP Update PDU.
 
    o  Path Status (4 Octets): indicates the path status of the BGP
-      Update PDU encapsulated in the RM Message.  Currently 8 types of
+      Update PDU encapsulated in the RM Message.  Currently 10 types of
       path status are defined, as shown in Table 1.  All zeros are
       reserved.
 
@@ -165,25 +165,29 @@ Internet-Draft             BMP path status tlv                April 2021
 
 
 
-Cardona, et al.         Expires October 22, 2021                [Page 3]
+Cardona, et al.          Expires April 22, 2023                 [Page 3]
 
-Internet-Draft             BMP path status tlv                April 2021
+Internet-Draft             BMP path status tlv                  Oct 2022
 
 
-                    +------------+------------------+
-                    | Value      | Path type        |
-                    +-------------------------------+
-                    | 0x00000001 | Invalid          |
-                    | 0x00000002 | Best             |
-                    | 0x00000004 | Non-selected     |
-                    | 0x00000008 | Primary          |
-                    | 0x00000010 | Backup           |
-                    | 0x00000020 | Non-installed    |
-                    | 0x00000040 | Best-external    |
-                    | 0x00000080 | Add-Path         |
-                    +------------+------------------+
+               +------------+-----------------------------+
+               | Value      | Path type                   |
+               +------------------------------------------+
+               | 0x00000000 | Reserved                    |
+               | 0x00000001 | Invalid                     |
+               | 0x00000002 | Best                        |
+               | 0x00000004 | Non-selected                |
+               | 0x00000008 | Primary                     |
+               | 0x00000010 | Backup                      |
+               | 0x00000020 | Non-installed               |
+               | 0x00000040 | Best-external               |
+               | 0x00000080 | Add-Path                    |
+               | 0x00000100 | Filtered in inbound policy  |
+               | 0x00000200 | Filtered in outbound policy |
+               | 0x00000400 | Invalid ROV                 |
+               +------------+-----------------------------+
 
-                    Table 1: IANA-Registered Path Type
+               Table 1: IANA-Registered Path Type
 
    The Path Status field contains a bitmap where each bit encodes a
    specific role of the path.  Multiple bits may be set when multiple
@@ -214,17 +218,17 @@ Internet-Draft             BMP path status tlv                April 2021
    o  A non-installed path refers to the route that is not installed
       into the IP routing table.
 
+
+
+
+Cardona, et al.          Expires April 22, 2023                 [Page 4]
+
+Internet-Draft             BMP path status tlv                  Oct 2022
+
+
    o  For the advertisement of multiple paths for the same address
       prefix without the new paths implicitly replacing any previous
-      ones, the add-path status is applied RFC7911 [RFC7911].
-
-
-
-
-Cardona, et al.         Expires October 22, 2021                [Page 4]
-
-Internet-Draft             BMP path status tlv                April 2021
-
+      ones, the add-path status is applied [RFC7911].
 
    The path status TLV does not force a BMP client to send any of these
    paths.  It just provides a method to mark the paths that are
@@ -236,7 +240,6 @@ Internet-Draft             BMP path status tlv                April 2021
     | [0x0001] | invalid for super network                           |
     | [0x0002] | invalid for dampening                               |
     | [0x0003] | invalid for damping history                         |
-    | [0x0004] | invalid for policy deny                             |
     | [0x0005] | invalid for ROV not valid                           |
     | [0x0006] | invalid for interface error                         |
     | [0x0007] | invalid for nexthop route unreachable               |
@@ -274,12 +277,9 @@ Internet-Draft             BMP path status tlv                April 2021
 
 
 
-
-
-
-Cardona, et al.         Expires October 22, 2021                [Page 5]
+Cardona, et al.          Expires April 22, 2023                 [Page 5]
 
-Internet-Draft             BMP path status tlv                April 2021
+Internet-Draft             BMP path status tlv                  Oct 2022
 
 
 2.2.  Enterprise-specific Path Status TLV
@@ -333,9 +333,9 @@ Internet-Draft             BMP path status tlv                April 2021
 
 
 
-Cardona, et al.         Expires October 22, 2021                [Page 6]
+Cardona, et al.          Expires April 22, 2023                 [Page 6]
 
-Internet-Draft             BMP path status tlv                April 2021
+Internet-Draft             BMP path status tlv                  Oct 2022
 
 
 4.  IANA Considerations
@@ -354,45 +354,57 @@ Internet-Draft             BMP path status tlv                April 2021
 6.  Normative References
 
    [I-D.ietf-grow-bmp-tlv]
-              Lucente, P., Gu, Y., and H. Smit, "TLV support for BMP
-              Route Monitoring and Peer Down Messages", draft-ietf-grow-
-              bmp-tlv-04 (work in progress), November 2020.
+              Lucente, P. and Y. Gu, "TLV support for BMP Route
+              Monitoring and Peer Down Messages", draft-ietf-grow-bmp-
+              tlv-08 (work in progress), October 2022,
+              <https://datatracker.ietf.org/api/v1/doc/document/draft-
+              ietf-grow-bmp-tlv/>.
+
+   [I-D.ietf-grow-bmp-tlv-ebit]
+              Lucente, P. and Y. Gu, "Support for Enterprise-specific
+              TLVs in the BGP Monitoring Protocol", draft-ietf-grow-bmp-
+              tlv-ebit-00 (work in progress), July 2022,
+              <https://www.ietf.org/archive/id/draft-ietf-grow-bmp-tlv-
+              ebit-00.txt>.
 
    [I-D.ietf-idr-best-external]
               Marques, P., Fernando, R., Chen, E., Mohapatra, P., and H.
               Gredler, "Advertisement of the best external route in
               BGP", draft-ietf-idr-best-external-05 (work in progress),
-              January 2012.
+              January 2012, <https://www.ietf.org/archive/id/draft-ietf-
+              idr-best-external-05.txt>.
 
    [I-D.ietf-rtgwg-bgp-pic]
               Bashandy, A., Filsfils, C., and P. Mohapatra, "BGP Prefix
-              Independent Convergence", draft-ietf-rtgwg-bgp-pic-12
-              (work in progress), August 2020.
+              Independent Convergence", draft-ietf-rtgwg-bgp-pic-18
+              (work in progress), April 2022,
+              <https://www.ietf.org/archive/id/draft-ietf-rtgwg-bgp-pic-
+              18.txt>.
+
+
+
+
+
+
+
+
+
+Cardona, et al.          Expires April 22, 2023                 [Page 7]
+
+Internet-Draft             BMP path status tlv                  Oct 2022
+
 
    [I-D.lapukhov-bgp-ecmp-considerations]
               Lapukhov, P. and J. Tantsura, "Equal-Cost Multipath
               Considerations for BGP", draft-lapukhov-bgp-ecmp-
-              considerations-05 (work in progress), November 2020.
-
-   [I-D.lucente-grow-bmp-tlv-ebit]
-              Lucente, P. and Y. Gu, "Support for Enterprise-specific
-              TLVs in the BGP Monitoring Protocol", draft-lucente-grow-
-              bmp-tlv-ebit-01 (work in progress), May 2020.
+              considerations-09 (work in progress), July 2022,
+              <https://www.ietf.org/archive/id/draft-lapukhov-bgp-ecmp-
+              considerations-09.txt>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/info/rfc2119>.
-
-
-
-
-
-
-Cardona, et al.         Expires October 22, 2021                [Page 7]
-
-Internet-Draft             BMP path status tlv                April 2021
-
 
    [RFC4271]  Rekhter, Y., Ed., Li, T., Ed., and S. Hares, Ed., "A
               Border Gateway Protocol 4 (BGP-4)", RFC 4271,
@@ -424,6 +436,20 @@ Authors' Addresses
    Email: camilo@ntt.net
 
 
+
+
+
+
+
+
+
+
+
+Cardona, et al.          Expires April 22, 2023                 [Page 8]
+
+Internet-Draft             BMP path status tlv                  Oct 2022
+
+
    Paolo Lucente
    NTT
    Siriusdreef 70-72
@@ -439,15 +465,6 @@ Authors' Addresses
    France
 
    Email: Pierre.Francois@insa-lyon.fr
-
-
-
-
-
-
-Cardona, et al.         Expires October 22, 2021                [Page 8]
-
-Internet-Draft             BMP path status tlv                April 2021
 
 
    Yunan Gu
@@ -484,21 +501,4 @@ Internet-Draft             BMP path status tlv                April 2021
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Cardona, et al.         Expires October 22, 2021                [Page 9]
+Cardona, et al.          Expires April 22, 2023                 [Page 9]
