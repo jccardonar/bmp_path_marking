@@ -114,7 +114,7 @@
       </address>
     </author>
 
-    <date day="10" month="Oct" year="2022"/>
+    <date day="19" month="Oct" year="2022"/>
 
     <abstract>
       <t>The BGP Monitoring Protocol (BMP) provides an interface for obtaining
@@ -123,7 +123,7 @@
       convey the status of a path after being processed by the BGP process. 
       This extension makes use of the TLV mechanims described in <xref
       target="I-D.ietf-grow-bmp-tlv">draft-ietf-grow-bmp-tlv</xref> and <xref
-      target="I-D.lucente-grow-bmp-tlv-ebit">draft-lucente-grow-bmp-tlv-ebit</xref>.
+      target="I-D.ietf-grow-bmp-tlv-ebit">draft-ietf-grow-bmp-tlv-ebit</xref>.
       </t>
     </abstract>
 
@@ -219,8 +219,8 @@
 | 0x00000020 | Non-installed               |
 | 0x00000040 | Best-external               |
 | 0x00000080 | Add-Path                    |
-| 0x00000100 | Filtered in outbound policy |
-| 0x00000200 | Filtered in inbound policy  |
+| 0x00000100 | Filtered in inbound policy  |
+| 0x00000200 | Filtered in outbound policy |
 | 0x00000400 | Invalid ROV                 |
 +------------+-----------------------------+
 
@@ -393,7 +393,7 @@ Table 1: IANA-Registered Path Type ]]></artwork>
 
       <?rfc include='reference.RFC.7911'?>
 
-      <?rfc include='reference.I-D.lucente-grow-bmp-tlv-ebit'?>
+      <?rfc include='reference.I-D.ietf-grow-bmp-tlv-ebit'?>
     </references>
   </back>
 </rfc>
