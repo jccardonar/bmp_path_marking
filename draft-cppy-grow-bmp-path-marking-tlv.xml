@@ -10,7 +10,7 @@
 <?rfc inline="yes"?>
 <?rfc compact="yes"?>
 <?rfc subcompact="no"?>
-<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-11"
+<rfc category="std" docName="draft-cppy-grow-bmp-path-marking-tlv-12"
      ipr="trust200902">
   <front>
     <title abbrev="BMP path status tlv">BMP Extension for Path Status
@@ -183,7 +183,7 @@
     Figure 2: Encoding of IANA-Registered Path Status TLV ]]></artwork>
           </figure><list style="symbols">
             <t>E bit: For an IANA-registered TLV, the E bit MUST be set to
-            0.</t>
+                0 <xref target="I-D.ietf-grow-bmp-tlv-ebit"/>.</t>
 
             <t>Type = TBD2 (15 Bits): indicates that it is the IANA-registered
             Path Status TLV.</t>
@@ -193,8 +193,9 @@
             Path-Status field and Reason Code field.</t>
 
             <t>Index (2 Octets): indicates the prefix that this TLV is describing.
-            The index is the encapsulation order, starting from 0, of the
-            prefix in the BGP Update PDU.</t>
+            Please see <xref target="I-D.ietf-grow-bmp-tlv"/> for details of
+            the use of the index field to associate the path marking content with one or
+            more NLRIs.</t>
 
             <t>Path Status (4 Octets): indicates the path status of the BGP
             Update PDU encapsulated in the RM Message. Currently 10 types of
@@ -307,7 +308,7 @@ Table 1: IANA-Registered Path Type ]]></artwork>
    Figure 3: Encoding of Enterprise-specific Path Status TLV]]></artwork>
           </figure><list style="symbols">
             <t>E bit: For an Enterprise-specific TLV, the E bit MUST be set to
-            1.</t>
+                1 <xref target="I-D.ietf-grow-bmp-tlv-ebit"/>.</t>
 
             <t>Type = 1 (15 Bits): indicates that it's the Enterprise-specific
             Path Status TLV.</t>
