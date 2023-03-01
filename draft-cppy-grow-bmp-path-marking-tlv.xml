@@ -114,7 +114,7 @@
       </address>
     </author>
 
-    <date day="19" month="Oct" year="2022"/>
+    <date day="10" month="Mar" year="2023"/>
 
     <abstract>
       <t>The BGP Monitoring Protocol (BMP) provides an interface for obtaining
@@ -265,9 +265,9 @@ Table 1: IANA-Registered Path Type ]]></artwork>
 
           </list>
 
-          <t>The path status TLV does not force a BMP client to send any of
+          The path status TLV does not force a BMP client to send any of
               these paths. It just provides a method to mark the paths that are
-              available with their status.</t>
+              available with their status.
 
 <figure>
             <artwork align="center"><![CDATA[+----------+-----------------------------------------------------+

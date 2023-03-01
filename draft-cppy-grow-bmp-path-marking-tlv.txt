@@ -5,17 +5,17 @@
 Network Working Group                                         C. Cardona
 Internet-Draft                                                P. Lucente
 Intended status: Standards Track                                     NTT
-Expires: April 22, 2023                                      P. Francois
+Expires: September 11, 2023                                  P. Francois
                                                                INSA-Lyon
                                                                    Y. Gu
                                                                   Huawei
                                                                  T. Graf
                                                                 Swisscom
-                                                            Oct 19, 2022
+                                                            Mar 10, 2023
 
 
                    BMP Extension for Path Status TLV
-                draft-cppy-grow-bmp-path-marking-tlv-11
+                draft-cppy-grow-bmp-path-marking-tlv-12
 
 Abstract
 
@@ -53,16 +53,16 @@ Status of This Memo
 
 
 
-Cardona, et al.          Expires April 22, 2023                 [Page 1]
+Cardona, et al.        Expires September 11, 2023               [Page 1]
 
-Internet-Draft             BMP path status tlv                  Oct 2022
+Internet-Draft             BMP path status tlv                  Mar 2023
 
 
-   This Internet-Draft will expire on April 22, 2023.
+   This Internet-Draft will expire on September 11, 2023.
 
 Copyright Notice
 
-   Copyright (c) 2022 IETF Trust and the persons identified as the
+   Copyright (c) 2023 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -80,11 +80,11 @@ Table of Contents
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
    2.  Path Status TLV . . . . . . . . . . . . . . . . . . . . . . .   3
      2.1.  IANA-registered Path Status TLV . . . . . . . . . . . . .   3
-     2.2.  Enterprise-specific Path Status TLV . . . . . . . . . . .   6
+     2.2.  Enterprise-specific Path Status TLV . . . . . . . . . . .   5
    3.  Acknowledgments . . . . . . . . . . . . . . . . . . . . . . .   6
-   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   7
-   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   7
-   6.  Normative References  . . . . . . . . . . . . . . . . . . . .   7
+   4.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
+   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
+   6.  Normative References  . . . . . . . . . . . . . . . . . . . .   6
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   8
 
 1.  Introduction
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Cardona, et al.          Expires April 22, 2023                 [Page 2]
+Cardona, et al.        Expires September 11, 2023               [Page 2]
 
-Internet-Draft             BMP path status tlv                  Oct 2022
+Internet-Draft             BMP path status tlv                  Mar 2023
 
 
    This document defines a so-called Path Status TLV to convey the BGP
@@ -139,7 +139,8 @@ Internet-Draft             BMP path status tlv                  Oct 2022
 
          Figure 2: Encoding of IANA-Registered Path Status TLV
 
-   o  E bit: For an IANA-registered TLV, the E bit MUST be set to 0.
+   o  E bit: For an IANA-registered TLV, the E bit MUST be set to 0
+      [I-D.ietf-grow-bmp-tlv-ebit].
 
    o  Type = TBD2 (15 Bits): indicates that it is the IANA-registered
       Path Status TLV.
@@ -149,8 +150,9 @@ Internet-Draft             BMP path status tlv                  Oct 2022
       Status field and Reason Code field.
 
    o  Index (2 Octets): indicates the prefix that this TLV is
-      describing.  The index is the encapsulation order, starting from
-      0, of the prefix in the BGP Update PDU.
+      describing.  Please see [I-D.ietf-grow-bmp-tlv] for details of the
+      use of the index field to associate the path marking content with
+      one or more NLRIs.
 
    o  Path Status (4 Octets): indicates the path status of the BGP
       Update PDU encapsulated in the RM Message.  Currently 10 types of
@@ -160,15 +162,16 @@ Internet-Draft             BMP path status tlv                  Oct 2022
    o  Reason Code (2 Octets, optional): indicates the reason of the path
       status indicated in the Path Status field.  The reason code field
       is optional.  If no reason code is carried, this field is empty.
+
+
+
+Cardona, et al.        Expires September 11, 2023               [Page 3]
+
+Internet-Draft             BMP path status tlv                  Mar 2023
+
+
       If a reason code is carried, the reason code is indicated by a
       2-byte value, which is defined in Table 2.
-
-
-
-Cardona, et al.          Expires April 22, 2023                 [Page 3]
-
-Internet-Draft             BMP path status tlv                  Oct 2022
-
 
                +------------+-----------------------------+
                | Value      | Path type                   |
@@ -215,16 +218,16 @@ Internet-Draft             BMP path status tlv                  Oct 2022
       until some or all primary paths become unreachable.  Backup paths
       are used for fast convergence in the event of failures.
 
+
+
+
+Cardona, et al.        Expires September 11, 2023               [Page 4]
+
+Internet-Draft             BMP path status tlv                  Mar 2023
+
+
    o  A non-installed path refers to the route that is not installed
       into the IP routing table.
-
-
-
-
-Cardona, et al.          Expires April 22, 2023                 [Page 4]
-
-Internet-Draft             BMP path status tlv                  Oct 2022
-
 
    o  For the advertisement of multiple paths for the same address
       prefix without the new paths implicitly replacing any previous
@@ -237,50 +240,20 @@ Internet-Draft             BMP path status tlv                  Oct 2022
     +----------+-----------------------------------------------------+
     |   Value  | Reason code                                         |
     +----------------------------------------------------------------+
-    | [0x0001] | invalid for super network                           |
-    | [0x0002] | invalid for dampening                               |
-    | [0x0003] | invalid for damping history                         |
-    | [0x0005] | invalid for ROV not valid                           |
-    | [0x0006] | invalid for interface error                         |
-    | [0x0007] | invalid for nexthop route unreachable               |
-    | [0x0008] | invalid for nexthop tunnel unreachable              |
-    | [0x0009] | invalid for nexthop restrain                        |
-    | [0x000A] | invalid for not supporting BGP LSP relay            |
-    | [0x000B] | invalid for being inactive within VPN insance       |
-    | [0x000C] | invalid for prefix sid not exist                    |
-    | [0x000D] | not preferred for peer address                      |
-    | [0x000E] | not preferred for router ID                         |
-    | [0x000F] | not preferred for Cluster List                      |
-    | [0x0010] | not preferred for IGP cost                          |
-    | [0x0011] | not preferred for peer type                         |
-    | [0x0012] | not preferred for MED                               |
-    | [0x0013] | not preferred for origin                            |
-    | [0x0014] | not preferred for AS Path                           |
-    | [0x0015] | not preferred for route type                        |
+    | [0x0007] | invalid for AS loop                                 |
+    | [0x0007] | invalid for unresolvable nexthop                    |
     | [0x0016] | not preferred for Local preference                  |
-    | [0x0017] | not preferred for Weight                            |
-    | [0x0018] | not preferred for path to next hop with bit error   |
-    | [0x0019] | not preferred for path id                           |
-    | [0x001A] | not preferred for ROV validation                    |
-    | [0x001B] | not preferred for originate IP                      |
-    | [0x001C] | not preferred for route distinguisher               |
-    | [0x001D] | not preferred for delayed route selection           |
-    | [0x001E] | not preferred for imported from other instances     |
-    | [0x001F] | not preferred for med plus igp cost                 |
+    | [0x0014] | not preferred for AS Path Length                    |
+    | [0x0013] | not preferred for origin                            |
+    | [0x0012] | not preferred for MED                               |
+    | [0x0011] | not preferred for peer type                         |
+    | [0x0010] | not preferred for IGP cost                          |
+    | [0x000E] | not preferred for router ID                         |
+    | [0x000D] | not preferred for peer address                      |
     | [0x0020] | not preferred for AIGP                              |
-    | [0x0021] | not preferred for BGP LSP aigp for next hop relay   |
-    | [0x0022] | not preferred for nexthop IP                        |
     +----------+-----------------------------------------------------+
 
                    Table 2: IANA-Registered Reason Code
-
-
-
-
-Cardona, et al.          Expires April 22, 2023                 [Page 5]
-
-Internet-Draft             BMP path status tlv                  Oct 2022
-
 
 2.2.  Enterprise-specific Path Status TLV
 
@@ -299,7 +272,15 @@ Internet-Draft             BMP path status tlv                  Oct 2022
 
       Figure 3: Encoding of Enterprise-specific Path Status TLV
 
-   o  E bit: For an Enterprise-specific TLV, the E bit MUST be set to 1.
+   o  E bit: For an Enterprise-specific TLV, the E bit MUST be set to 1
+      [I-D.ietf-grow-bmp-tlv-ebit].
+
+
+
+Cardona, et al.        Expires September 11, 2023               [Page 5]
+
+Internet-Draft             BMP path status tlv                  Mar 2023
+
 
    o  Type = 1 (15 Bits): indicates that it's the Enterprise-specific
       Path Status TLV.
@@ -326,18 +307,6 @@ Internet-Draft             BMP path status tlv                  Oct 2022
 
    We would like to thank Jeff Haas for his valuable comments.
 
-
-
-
-
-
-
-
-Cardona, et al.          Expires April 22, 2023                 [Page 6]
-
-Internet-Draft             BMP path status tlv                  Oct 2022
-
-
 4.  IANA Considerations
 
    This document requests that IANA assign the following new parameters
@@ -356,50 +325,46 @@ Internet-Draft             BMP path status tlv                  Oct 2022
    [I-D.ietf-grow-bmp-tlv]
               Lucente, P. and Y. Gu, "TLV support for BMP Route
               Monitoring and Peer Down Messages", draft-ietf-grow-bmp-
-              tlv-08 (work in progress), October 2022,
-              <https://datatracker.ietf.org/api/v1/doc/document/draft-
-              ietf-grow-bmp-tlv/>.
+              tlv-10 (work in progress), November 2022,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-grow-
+              bmp-tlv-10>.
+
+
+
+
+
+Cardona, et al.        Expires September 11, 2023               [Page 6]
+
+Internet-Draft             BMP path status tlv                  Mar 2023
+
 
    [I-D.ietf-grow-bmp-tlv-ebit]
               Lucente, P. and Y. Gu, "Support for Enterprise-specific
               TLVs in the BGP Monitoring Protocol", draft-ietf-grow-bmp-
-              tlv-ebit-00 (work in progress), July 2022,
-              <https://www.ietf.org/archive/id/draft-ietf-grow-bmp-tlv-
-              ebit-00.txt>.
+              tlv-ebit-01 (work in progress), November 2022,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-grow-
+              bmp-tlv-ebit-01>.
 
    [I-D.ietf-idr-best-external]
               Marques, P., Fernando, R., Chen, E., Mohapatra, P., and H.
               Gredler, "Advertisement of the best external route in
               BGP", draft-ietf-idr-best-external-05 (work in progress),
-              January 2012, <https://www.ietf.org/archive/id/draft-ietf-
-              idr-best-external-05.txt>.
+              January 2012, <https://datatracker.ietf.org/doc/html/
+              draft-ietf-idr-best-external-05>.
 
    [I-D.ietf-rtgwg-bgp-pic]
               Bashandy, A., Filsfils, C., and P. Mohapatra, "BGP Prefix
               Independent Convergence", draft-ietf-rtgwg-bgp-pic-18
               (work in progress), April 2022,
-              <https://www.ietf.org/archive/id/draft-ietf-rtgwg-bgp-pic-
-              18.txt>.
-
-
-
-
-
-
-
-
-
-Cardona, et al.          Expires April 22, 2023                 [Page 7]
-
-Internet-Draft             BMP path status tlv                  Oct 2022
-
+              <https://datatracker.ietf.org/doc/html/draft-ietf-rtgwg-
+              bgp-pic-18>.
 
    [I-D.lapukhov-bgp-ecmp-considerations]
               Lapukhov, P. and J. Tantsura, "Equal-Cost Multipath
               Considerations for BGP", draft-lapukhov-bgp-ecmp-
-              considerations-09 (work in progress), July 2022,
-              <https://www.ietf.org/archive/id/draft-lapukhov-bgp-ecmp-
-              considerations-09.txt>.
+              considerations-10 (work in progress), January 2023,
+              <https://datatracker.ietf.org/doc/html/draft-lapukhov-bgp-
+              ecmp-considerations-10>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -421,6 +386,14 @@ Internet-Draft             BMP path status tlv                  Oct 2022
               DOI 10.17487/RFC7911, July 2016,
               <https://www.rfc-editor.org/info/rfc7911>.
 
+
+
+
+Cardona, et al.        Expires September 11, 2023               [Page 7]
+
+Internet-Draft             BMP path status tlv                  Mar 2023
+
+
    [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
               2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
               May 2017, <https://www.rfc-editor.org/info/rfc8174>.
@@ -434,20 +407,6 @@ Authors' Addresses
    Spain
 
    Email: camilo@ntt.net
-
-
-
-
-
-
-
-
-
-
-
-Cardona, et al.          Expires April 22, 2023                 [Page 8]
-
-Internet-Draft             BMP path status tlv                  Oct 2022
 
 
    Paolo Lucente
@@ -486,19 +445,4 @@ Internet-Draft             BMP path status tlv                  Oct 2022
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-Cardona, et al.          Expires April 22, 2023                 [Page 9]
+Cardona, et al.        Expires September 11, 2023               [Page 8]
