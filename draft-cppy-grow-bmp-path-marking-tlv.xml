@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="US-ASCII"?>
-<!DOCTYPE rfc SYSTEM "rfc2629.dtd">
 <?rfc toc="yes"?>
 <?rfc tocompact="yes"?>
 <?rfc tocdepth="3"?>
@@ -207,11 +206,10 @@
             code field is optional. If no reason code is carried, this field
             is empty. If a reason code is carried, the reason code is
             indicated by a 2-byte value, which is defined in Table 2.</t>
-          </list><figure>
+          </list><figure anchor="status_codes">
             <artwork align="center"><![CDATA[+------------+-----------------------------+
 | Value      | Path type                   |
 +------------------------------------------+
-| 0x00000000 | Reserved                    |
 | 0x00000001 | Invalid                     |
 | 0x00000002 | Best                        |
 | 0x00000004 | Non-selected                |
@@ -269,7 +267,7 @@ Table 1: IANA-Registered Path Type ]]></artwork>
               these paths. It just provides a method to mark the paths that are
               available with their status.
 
-<figure>
+<figure anchor="reasons_codes">
             <artwork align="center"><![CDATA[+----------+-----------------------------------------------------+
 |   Value  | Reason code                                         |
 +----------------------------------------------------------------+
@@ -334,8 +332,106 @@ Table 1: IANA-Registered Path Type ]]></artwork>
       </section>
     </section>
 
+    <section title="Implementation notes">
+
+        <t>The BMP path marking TLV remains optional within BMP
+            implementations.</t>
+
+        <t>An implementation of the BMP path marking TLV may not fully support
+        marking of all status defined in table <xref target="status_codes"/> or
+        any future extensions. Similarly, an implementation may choose to
+        support the inclusion of the reason code (for which support is also
+        optional), without necessarily incorporating any of the reason codes
+            defined in table <xref target="reasons_codes"/> or future
+                extensions.</t>
+
+        <t>This document refrains from defining mechanisms for signaling the
+            status or reason codes an implementation supports. This could be
+            established through external means (e.g. documentation) or
+            potentially addressed in a subsequent document.</t>
+
+        <t>The remainder of this section encompasses additional points related
+            to the implementation of the BMP Path marking TLV.</t>
+
+        <section title="Configuration of BMP path marking">
+
+            <t>Implementations supporting the BMP path marking TLV SHOULD
+                provide an option for enabling or disabling the Path Marking
+                TLV over BMP sessions. Furthermore,  the configuration options
+                for this TLV SHOULD provide the means to enable and disable the
+                transmission of reason codes, if the reason code are supported by the
+                implementation.</t>
+
+        </section>
+
+        <section title="Paths with no markings">
+
+            <t>Some BGP routes might not require any type of status or reasons.
+            For example, an unfiltered path obtained via the Adj-RIB-IN may
+            fall under this category since there is really nothing to mark for
+            that path.  We suggest a couple of approaches for signaling
+            that a path has no markings: (1) An implicit form of marking,
+            achieved by abstaining from appending any BMP marking TLV pointing
+            toward the route. (2) Alternatively, an explicit marking of the
+            packet through a TLV containing no marked status and no associated
+            reason code.</t>
+
+        </section>
+
+        <section title="Significance of status and origin RIBs">
+
+            <t>This document refrains from imposing any implementation to mark
+            specific status from specific RIBs. We recognize the diversity
+            among implementations;  some might be able to mark some status over
+            one RIB while other do it on others. For instance, some might be
+            able to mark Adj-RIB-in filtered routes when obtained from the
+            Adj-RIB-IN pre, while other could do it only from the Adj-RIB-IN
+            post. To remove ambiguities in implementations, we recommend the
+                meaning of status (and reason codes) to not depend on the
+                origin RIB of a route.</t>
+
+        </section>
+
+        <section title="Enterprise-specific status and reasons" anchor="ebit_mixed">
+
+            <t>Implementations introducing their own status and reason codes
+            are advised to adhere to <xref
+                target="I-D.ietf-grow-bmp-tlv-ebit"/>  and use ebit and  vendor
+                specific status and reasons. Additionally, we recommend all
+                implementations to provide comprehensive documentation for
+                these codes.</t>
+
+            <t>For scenarios where a path state combines a standard status with
+                an enterprise-specific reason code (or vice versa), the
+                following alternatives are presented:</t>
+
+            <t> 
+                <ul spacing="compact"> 
+                    <li>Replication of the standard
+            definitions within the enterprise-specific space, thus permitting
+                    direct marking within the same packet using the ebit.</li> 
+                <li>Assigning two TLVs to the same path(s): one containing the standard
+                    part and another housing the vendor-specific part.</li> 
+                </ul>
+            </t>
+
+        </section>
+
+        <section title="Multiple TLVs assigned to the same route.">
+
+            <t>We advocate for the employment of TLV grouping wherever
+                feasible. The inclusion of all marking information within a
+                single message is recommended, except on the case described in
+                section <xref target="ebit_mixed"/>. In situations where
+                    multiple TLVs are associated with a single route, all
+                    markings will be applicable to that route.</t>
+
+        </section>
+    </section>
+
     <section title="Acknowledgments">
-      <t>We would like to thank Jeff Haas for his valuable comments.</t>
+      <t>We would like to thank Jeff Haas and  Maxence Younsi  for their
+          valuable comments.</t>
     </section>
 
     <section anchor="IANA" title="IANA Considerations">
@@ -354,25 +450,25 @@ Table 1: IANA-Registered Path Type ]]></artwork>
 
   <back>
     <references title="Normative References">
-      <?rfc include="reference.RFC.2119"?>
+      <?rfc include="reference.RFC.2119.xml"?>
 
-      <?rfc include="reference.RFC.8174"?>
+      <?rfc include="reference.RFC.8174.xml"?>
 
-      <?rfc include='reference.RFC.4271'?>
+      <?rfc include='reference.RFC.4271.xml'?>
 
-      <?rfc include='reference.RFC.7854'?>
+      <?rfc include='reference.RFC.7854.xml'?>
 
-      <?rfc include='reference.I-D.ietf-idr-best-external'?>
+      <?rfc include='reference.I-D.ietf-idr-best-external.xml'?>
 
-      <?rfc include='reference.I-D.ietf-grow-bmp-tlv'?>
+      <?rfc include='reference.I-D.ietf-grow-bmp-tlv.xml'?>
 
-      <?rfc include='reference.I-D.ietf-rtgwg-bgp-pic'?>
+      <?rfc include='reference.I-D.ietf-rtgwg-bgp-pic.xml'?>
 
-      <?rfc include='reference.I-D.lapukhov-bgp-ecmp-considerations'?>
+      <?rfc include='reference.I-D.lapukhov-bgp-ecmp-considerations.xml'?>
 
-      <?rfc include='reference.RFC.7911'?>
+      <?rfc include='reference.RFC.7911.xml'?>
 
-      <?rfc include='reference.I-D.ietf-grow-bmp-tlv-ebit'?>
+      <?rfc include='reference.I-D.ietf-grow-bmp-tlv-ebit.xml'?>
     </references>
   </back>
 </rfc>
